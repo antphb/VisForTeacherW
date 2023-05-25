@@ -13,10 +13,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import dj_database_url
 import environ
-import mimetypes
-# mimetypes.add_type("static/css", ".css", True)
-# mimetypes.add_type("static/js", ".js", True)
-mimetypes.add_type("static/image/img_login", ".png", True)
 env = environ.Env()
 environ.Env.read_env()
 
@@ -150,7 +146,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'staticfiles_build/static/'
 LOGIN_REDIRECT_URL = '/profile/'
 
 # Default primary key field type
