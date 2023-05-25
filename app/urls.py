@@ -19,6 +19,8 @@ from django.views.generic.base import RedirectView
 from . import views
 from django.contrib.auth import views as auth_views
 from .forms import *
+from django.conf.urls.static import static
+from django.conf import settings
 urlpatterns = [
     path('', RedirectView.as_view(url='/login/'),name='index'),
     
@@ -70,3 +72,4 @@ urlpatterns = [
 
     path("logout_user",views.logout_user,name="logout_user"),
 ]
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
