@@ -1,0 +1,112 @@
+{% extends 'app/base.html' %}
+{% load static%}
+
+{% block name-title %}
+    Danh sách lớp
+{% endblock name-title %}
+
+{% block link-css %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="{% static 'css/tableStudent.css' %}">
+    <style>
+        .dashboardPoint{
+            background: #fff;
+            border-radius: 15px;
+        }
+        #loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            position: absolute;
+            width: 100%;
+            z-index: 9999;
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+{% endblock link-css %}
+    
+{% block main-content %}
+
+<div id="loading" class="d-none">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+{% if maLop == "Graduated" %}
+    <h2 class="text-center">Danh sách sinh viên đã tốt nghiệp</h2>
+{% elif maLop != "ALL" %}
+    <h2 class="text-center">Danh sách sinh viên lớp {{maLop}}</h2>
+{% else %}
+    <h2 class="text-center">Danh sách sinh viên</h2>
+{% endif %}
+<div class="snippet-body">
+    <div class="container-fluid">
+        <div class="tableStudent ml-3 mr-3 table-scroll" id="table-scroll">
+            <div class="table-responsive-sm text-nowrap table-wrap p-2" style="
+            background-color: #fff;">
+                <table id="example" class="table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th scope="col">STT</th>
+                            <th scope="col">Mã sinh viên</th>
+                            <th scope="col">Họ đệm</th>
+                            <th scope="col">Tên</th>
+                            <th scope="col">Giới tính</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Số điện thoại</th>
+                            <th scope="col">Số tín chỉ</th>
+                            <th scope="col">Điểm hệ 4</th>
+                            <th scope="col">Ghi chú</th>
+                        </tr>
+                        </thead>
+                    <tbody>
+                        {% for stu,ngaysinh,gioitinh,diem4,sotc,numofNote in data %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td><a href="{%url 'infoStudent' stu.masv%}">{{stu.masv}}</a></td>
+                                <td>{{stu.hodem}}</td>
+                                <td>{{stu.ten}}</td>
+                                <td>{{gioitinh}}</td>
+                                <td>{{stu.email}}</td>
+                                <td>{{stu.sodt}}</td>
+                                <td>{{sotc}}</td>
+                                <td>{{diem4}}</td>
+                                <td>
+                                    {% if numofNote > 0 %}
+                                        <a href="{%url 'list-note-student' 'ALL' stu.masv %}" > 
+                                            {{numofNote}}
+                                        </a>
+                                    {% else %}
+                                        {{numofNote}}
+                                    {% endif %}
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="dashboardPoint mt-5 ml-3 mr-5">
+    {% if maLop != "Graduated" %}
+        {% if maLop != "ALL" %}
+            <h3 class="text-center pt-3">Thông tin điểm sinh viên lớp {{maLop}}</h3>
+        {% else %}
+            <h3 class="text-center pt-3">Thông tin điểm sinh viên</h3>
+        {% endif %}
+            <div class="row p-0 m-0 justify-content-center align-content-between">
+                {% include 'chart/chart_score_home.html' %}
+            </div>
+    {% endif %}
+</div> 
+{% endblock main-content %}
+
+{% block script-js %}
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js" ></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="{%static 'js/tableStudent.js'%}"></script>
+{% endblock script-js %}

@@ -1,0 +1,433 @@
+{% extends 'app/base.html' %}
+{% load static%}
+
+{% block name-title %}
+    Detail Information Teacher
+{% endblock name-title %}
+
+
+{% block link-css %}
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="{%static 'css/DetailIn4Teacher.css'%}">
+{% endblock link-css %}
+
+{% block main-content %}
+    <div class="container emp-profile vh-">
+        <form method="post">
+            {%csrf_token%}
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="profile-img">
+                        <img src="{%static 'image/no-avatar.png'%}" alt="" class="h-50 w-50"/>
+                        <div class="file btn btn-lg btn-primary">
+                            Đổi avatar
+                            <input type="file" name="file"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="profile-head">
+                                <h5>
+                                    {{giaovien.tengv}}
+                                </h5>
+                                <h6>
+                                    {{giaovien.nganh}}
+                                </h6>
+                                <p class="proile-rating">RANKINGS : <span>8/10</span></p>
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Giới thiệu</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">
+                                    Học vấn
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <a class="btn profile-edit-btn" href="javascript:void(0)" data-toggle="modal" data-target="#ModalEDIT" data-msgv="{{giaovien.magv}}" data-hoten="{{giaovien.tengv}}" data-email="{{giaovien.email}}" data-sdt="{{giaovien.sdt}}" data-diachi="{{giaovien.diachi}}">
+                        Edit Profile
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="profile-work">
+                        <p>WORK LINK</p>
+                        <a href="">Website Link</a><br/>
+                        <a href="">Bootsnipp Profile</a><br/>
+                        <a href="">Bootply Profile</a>
+                        <p>SKILLS</p>
+                        <a href="">Web Designer</a><br/>
+                        <a href="">Web Developer</a><br/>
+                        <a href="">WordPress</a><br/>
+                        <a href="">WooCommerce</a><br/>
+                        <a href="">PHP, .Net</a><br/>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="tab-content profile-tab" id="myTabContent">
+                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Mã số giáo viên</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>{{giaovien.magv}}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Họ Và Tên</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>{{giaovien.tengv}}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Ngày sinh</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>{{ngaysinh}}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Giới tính</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>{{gioitinh}}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Email</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>{{giaovien.email}}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Số điện thoại</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>{{giaovien.sdt}}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Địa chỉ thường trú</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>{{giaovien.diachi}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Chức danh</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>{{giaovien.chucdanh}}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Phân hạng</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>{{giaovien.phanhang}}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Chức vụ</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>{{giaovien.chucvu}}</p>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>           
+    </div>
+
+    <div class="modal fade" id="ModalEDIT" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Chỉnh sửa</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="EditInforForm">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-control" >MSGV: </label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="editMsgv" class="form-control" readonly id="msgvEdit">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-control" >Họ và tên: </label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="editHoTen" class="form-control" id="hoTenEdit" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-control" >Email: </label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="email" name="editEmail" class="form-control" id="EmailEdit">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-control" >Số điện thoại: </label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="editSDT" class="form-control" id="SDTEdit">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-control" >Địa chỉ: </label>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <select name="TinhThanh" id="TinhThanh" class="form-control">
+                                        <option value="" >-- Chọn tỉnh/thành phố --</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-12">
+                                    <select name="QuanHuyen" id="QuanHuyen" class="form-control">
+                                        <option value="">-- Chọn quận/huyện --</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-12">
+                                    <select name="PhuongXa" id="PhuongXa" class="form-control">
+                                        <option value="">-- Chọn phường/xã --</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" name="SoNhaTenDuong" id="SoNhaTenDuong" placeholder="Số nhà, tên đường">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mt-3">
+                            <input type="" name="edit" id="BtnEditInforForm"  class="btn btn-primary w-100" value="Save">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+            </div>
+        </div>
+        </div>
+    </div>
+{% endblock main-content %}
+
+{% block script-js %}
+<!-- <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js" ></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+<script>
+    function getCodes(tinhthanh, quanhuyen, phuongxa) {
+        var maTinhThanh = "", maQuanHuyen = "", maPhuongXa = "";
+        
+        // gọi API và lấy danh sách tỉnh/thành phố
+        $.getJSON("https://provinces.open-api.vn/api/?depth=3", function(data) {
+            // tìm và lấy mã code của tỉnh/thành phố
+            $.each(data, function(index, value) {
+                if (value.name === tinhthanh) {
+                    // console.log(value.name);
+                    maTinhThanh = value.code;
+                    $("#TinhThanh").val(maTinhThanh).change();
+                    return false;
+                }
+            });
+
+            // nếu không tìm thấy tỉnh/tp thì trả về null
+            if (!maTinhThanh) {
+                console.log("Không tìm thấy mã code cho tỉnh/thành phố " + tinhthanh);
+                return null;
+            }
+
+            // gọi API và lấy danh sách quận/huyện theo mã code của tỉnh/thành phố đã tìm được
+            $.getJSON("https://provinces.open-api.vn/api/p/" + maTinhThanh + "?depth=2", function(data) {
+                // tìm và lấy mã code của quận/huyện
+                $.each(data.districts, function(index, value) {
+                    if (value.name === quanhuyen) {
+                        maQuanHuyen = value.code;
+                        $("#QuanHuyen").val(maQuanHuyen).change();
+                        return false;
+                    }
+                });
+
+                // nếu không tìm thấy quận/huyện thì trả về null
+                if (!maQuanHuyen) {
+                    console.log("Không tìm thấy mã code cho quận/huyện " + quanhuyen);
+                    return null;
+                }
+
+                // gọi API và lấy danh sách phường/xã theo mã code của quận/huyện đã tìm được
+                $.getJSON("https://provinces.open-api.vn/api/d/" + maQuanHuyen + "?depth=2", function(data) {
+                    // tìm và lấy mã code của phường/xã
+                    $.each(data.wards, function(index, value) {
+                        if (value.name === phuongxa) {
+                            maPhuongXa = value.code;
+                            $('#PhuongXa').val(maPhuongXa).change();
+                            return false;
+                        }
+                    });
+
+                    // nếu không tìm thấy phường/xã thì trả về null
+                    if (!maPhuongXa) {
+                        console.log("Không tìm thấy mã code cho phường/xã " + phuongxa);
+                        return null;
+                    }
+                });
+            });
+        });
+    }
+
+    $('#ModalEDIT').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        console.log(button);
+
+        // lấy các giá trị từ data-* attribute
+        var msgv = button.data('msgv');
+
+        var hoten = button.data('hoten');
+        var email = button.data('email');
+        var sdt = button.data('sdt');
+        var diachiChiTiet = button.data('diachi');
+        // console.log(diachiChiTiet);
+        // var diachi = button.data('diachi');
+
+        // Gán giá trị cho các phần tử trong modal
+        var modal = $(this);
+        // var diachichitiet="31 Đinh Tiên Hoàng-Thị trấn Chư Sê-Huyện Chư Sê-Tỉnh Gia Lai"
+        var diachi=diachiChiTiet.split("-");
+        // console.log(diachi);
+        var tinhthanh=diachi[3].trim();
+        var quanhuyen=diachi[2];
+        var phuongxa=diachi[1];
+        var sonhatenduong=diachi[0];
+        getCodes(tinhthanh, quanhuyen, phuongxa);
+        modal.find('#msgvEdit').val(msgv);
+        modal.find('#hoTenEdit').val(hoten);
+        modal.find('#EmailEdit').val(email);
+        modal.find('#SDTEdit').val(sdt);
+        modal.find('#SoNhaTenDuong').val(sonhatenduong);
+    });
+    $(document).ready(function() {
+    // Gọi API và lấy danh sách tỉnh/thành phố
+        $.getJSON("https://provinces.open-api.vn/api/?depth=3", function(data) {
+            var html = "";
+            $.each(data, function(key, val) {
+            html += "<option value='" + val.code + "'>" + val.name + "</option>";
+            });
+            $('#TinhThanh').html(html);
+        });
+        
+        // Sự kiện khi chọn tỉnh thành phố
+        $('#TinhThanh').on('change', function() {
+            var codeTinhThanh = $(this).val();
+            // Gọi lại API và lấy danh sách quận/huyện tương ứng với tỉnh/thành phố đã chọn
+            $.getJSON("https://provinces.open-api.vn/api/p/" + codeTinhThanh + "?depth=2", function(data) {
+            var html = "";
+            $.each(data.districts, function(key, val) {
+                html += "<option value='" + val.code + "'>" + val.name + "</option>";
+            });
+            $('#QuanHuyen').html(html);
+            $('#PhuongXa').html("<option value=''>-- Chọn phường/xã --</option>");
+            });
+        });
+        
+        // Sự kiện khi chọn quận huyện
+        $('#QuanHuyen').on('change', function() {
+            var codeQuanHuyen = $(this).val();
+            // Gọi lại API và lấy danh sách phường/xã tương ứng với quận/huyện đã chọn
+            $.getJSON("https://provinces.open-api.vn/api/d/" + codeQuanHuyen + "?depth=2", function(data) {
+            var html = "";
+            $.each(data.wards, function(key, val) {
+                html += "<option value='" + val.code + "'>" + val.name + "</option>";
+            });
+            $('#PhuongXa').html(html);
+            });
+        });
+    });
+    function checkNoiDungNoteEDIT()
+    {
+        var email = document.querySelector("#EmailEdit").value;
+        var sdt = document.querySelector("#SDTEdit").value;
+        var tinhthanh = document.querySelector("#TinhThanh").value;
+        var quanhuyen = document.querySelector("#QuanHuyen").value;
+        var phuongxa = document.querySelector("#PhuongXa").value;
+        var sonhatenduong = document.querySelector("#SoNhaTenDuong").value;
+        if (email == "" || sdt == "" || tinhthanh == "" || quanhuyen == "" || phuongxa == "" || sonhatenduong == "")
+        {
+            alert("Vui lòng nhập đầy đủ thông tin");
+            return false;
+        }
+        return true;
+    }
+    $("#BtnEditInforForm").click(
+        function()
+        {
+            if (checkNoiDungNoteEDIT())
+            {
+                $.ajax({
+                    url: "/edit-info-teacher/",
+                    type: "POST",
+                    data:{
+                        'msgv': $("#msgvEdit").val(),
+                        'email': $("#EmailEdit").val(),
+                        'sdt': $("#SDTEdit").val(),
+                        'tinhthanh': $("#TinhThanh option:selected").html(),
+                        'quanhuyen': $("#QuanHuyen option:selected").html(),
+                        'phuongxa': $("#PhuongXa option:selected").html(),
+                        'sonhatenduong': $("#SoNhaTenDuong").val(),
+                        'csrfmiddlewaretoken': '{{csrf_token}}'
+                    },
+                    success: function(data){
+                        alert("Cập nhập thông tin thành công");
+                        location.reload();
+                    },
+                    error: function(){
+                        alert("Cập nhập thông tin thất bại");
+                    }
+                })
+            }
+        }
+    );
+
+</script>
+{% endblock script-js %}

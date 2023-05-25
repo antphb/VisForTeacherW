@@ -1,0 +1,156 @@
+<div class="col-md-4 chart">
+    <h4 class="d-flex align-items-center justify-content-center font-weight-bold" style="font-size: 20px; height: 9%; margin-bottom: 12px;">Tổng quan về xếp loại của các môn học</h4>
+    <hr class="mt-0 mb-4">
+    <div id="chart-RankScore-student-x" class="d-flex align-items-center justify-content-center">
+    </div>
+</div>
+<div class="col-md-4 chart">
+    <span class="d-flex align-items-baseline justify-content-between">
+        <p class="text-center font-weight-bold" style="font-size: 20px;margin-bottom: 12px;">Danh sách môn xếp loại</p>
+        <select name="sDiemThang4" id="sDiemThang4" class="form-control" style="width: 40%! important">
+            <option value="all" selected>Tất cả</option>
+            <option value="4.0">Xuất sắc (A+)</option>
+            <option value="3.8">Giỏi (A)</option>
+            <option value="3.5">Khá (B+)</option>
+            <option value="3.0">Khá (B)</option>
+            <option value="2.5">Trung bình (C+)</option>
+            <option value="2.0">Trung bình (C)</option>
+            <option value="1.5">Trung bình yếu (D+)</option>
+            <option value="1.0">Trung bình yếu (D)</option>
+            <option value="0">Kém (F)</option>
+        </select>
+    </span>
+    <hr class="mt-0">
+    <div class="border-scroll d-flex align-content-center justify-content-center">
+        <table class="table table-hover table-bordered main-table" id="ListSubjectThangDiem4" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th scope="col">STT</th>
+                    <th scope="col">Môn học</th>
+                    <th scope="col">Điểm</th>
+                </tr>
+              </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+<style>
+    .border-scroll {
+        max-height: 250px;
+        overflow: auto !important;
+        /* overflow-y: auto !important;  */
+        outline: none;
+    }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.28.3/dist/apexcharts.min.js"></script>
+<script>
+    fetch('{% url "chart_data_RankScore_student_x" student.masv%}')
+    .then(response => response.json())
+    .then(data => {
+    const options = {
+        chart: {
+        type: 'donut',
+        height: 'auto',
+        },
+        series: Object.values(data['rank_hocphan']),
+        labels: Object.keys(data['rank_hocphan']),
+        colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0','#546E7A', '#26a69a', '#D10CE8', '#FF5722'],
+        responsive: [{
+            breakpoint: 480,
+            options: {
+                chart: {
+                    width: 200
+                },
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }]
+    }   
+    const chart = new ApexCharts(document.querySelector('#chart-RankScore-student-x'), options)
+    chart.render();
+
+    function setSelected(selectValue)
+    {
+        var select = document.getElementById("sDiemThang4");
+        for (var i = 0; i < select.options.length; i++) {
+            if (select.options[i].value == selectValue) {
+                select.options[i].selected = true;
+                break;
+            }
+        }
+    }
+    chart.addEventListener("dataPointSelection", function(event, chartContext, config) {
+        const selectedLabel = config.w.config.labels[config.dataPointIndex];
+        //console.log("Selected label:", selectedLabel);
+        let selectValue = null;
+        const gradeValueMap = {
+        'A+': '4.0',
+        'A': '3.8',
+        'B+': '3.5',
+        'B': '3.0',
+        'C+': '2.5',
+        'C': '2.0',
+        'D+': '1.5',
+        'D': '1.0',
+        'F': '0'
+        };
+
+        selectValue = gradeValueMap[selectedLabel];
+        setSelected(selectValue);
+        createTalbe(selectValue);
+    });
+
+    chart.addEventListener("legendItemClick", function(event, chartContext, config) {
+        const selectedLabel = config.w.config.series[config.seriesIndex].name;
+        console.log("Selected label:", selectedLabel);
+    });
+
+    function createTalbe(selectValue) {
+        var table = document.getElementById("ListSubjectThangDiem4");
+        while (table.rows.length > 1) {
+            table.deleteRow(-1);
+        }
+        let i = 1;
+        for (let [key, value] of Object.entries(data['rank_thang4'])) 
+        {
+            if (value === selectValue) 
+            {
+                var row = table.insertRow(-1);
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                var cell3 = row.insertCell(2);
+                cell1.innerHTML = i++;
+                cell2.innerHTML = key;
+                cell3.innerHTML = value;
+            }
+            else
+            {
+                if (selectValue === 'all') 
+                {
+                    var row = table.insertRow(-1);
+                    var cell1 = row.insertCell(0);
+                    var cell2 = row.insertCell(1);
+                    var cell3 = row.insertCell(2);
+                    cell1.innerHTML = i++;
+                    cell2.innerHTML = key;
+                    cell3.innerHTML = value;
+                }
+            }
+        }
+
+    }
+    const select = document.getElementById("sDiemThang4");
+    const selectValue = select.value;
+    var text=select.options[select.selectedIndex].text;
+    var table = document.getElementById("ListSubjectThangDiem4");
+    createTalbe(selectValue);
+    select.addEventListener("change", function(){
+        const selectValue = select.value;
+        // console.log(selectValue)
+        createTalbe(selectValue);
+    })
+    })
+</script>

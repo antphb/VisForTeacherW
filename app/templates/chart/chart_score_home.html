@@ -1,0 +1,178 @@
+<div class="col-md-7 chart">
+    <div id="chart-score-bar-student" class="d-flex align-content-center justify-content-center">
+    </div>
+</div>
+<div class="col-md-5 chart">
+    <div id="chart-score-pie" class="d-flex align-content-center justify-content-center">
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.28.3/dist/apexcharts.min.js"></script>
+<script>
+    const loading = document.getElementById("loading");
+    loading.classList.remove("d-none");
+    fetch('{% url "chart_bar_score" maLop %}')
+    .then(response => response.json())
+    .then(data => {
+        const color_Rank= {
+            'Xuất sắc': '#29174D',
+            'Giỏi': 'rgb(25, 93, 172)',	
+            'Khá': '#02577a',	
+            'Trung bình': '#02a9f7',
+            'Trung bình yếu': '#44B6A3',	
+            'Kém': '#d4f0fc'
+        }
+        const diemsv=Object.values(data["scores"]);
+        const options = {
+            chart: {
+                type: 'line',
+            },
+            series: [{
+                name: 'Biểu đồ đường điểm',
+                type: 'line',
+                data: Object.values(data["scores"]),
+                color: function({value, seriesIndex, dataPointIndex, w}) {
+                    return '#F74545'
+                }
+            },{
+                name: 'Biểu đồ cột điểm',
+                type: 'column',
+                data: Object.values(data["scores"]),
+                color: function({value, seriesIndex, dataPointIndex, w}) {
+                    if ((value >=3.6 && value <=4))
+                    {
+                        return color_Rank["Xuất sắc"]
+                    }
+                    else if (value >= 3.2 && value <3.6) {
+                        return color_Rank["Giỏi"]
+                    }
+                    else if (value >= 2.5 && value <3.2) {
+                        return color_Rank["Khá"]
+                    } 
+                    else if (value >= 2 && value <2.5) {
+                        return color_Rank["Trung bình"]
+                    }
+                    else if (value >= 1 && value <2) {
+                        return color_Rank["Trung bình yếu"]
+                    }else {
+                        return color_Rank["Kém"]
+                    }
+                }
+            }],
+            
+            stroke: {
+                width: [2, 1],
+                curve: 'smooth',
+            },
+            title: {
+                text: 'Điểm sinh viên lớp',
+                align: 'center',
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: 'Arima Madurai',
+                },
+            },
+            xaxis: {
+                categories: Object.keys(data["scores"]),
+                scrollbar: {
+                    enabled: true,
+                    showNullValues: false
+                }
+            },
+            yaxis: [
+                {
+                axisTicks: {
+                    show: true,
+                },
+                axisBorder: {
+                    show: true,
+                    color: '#3978D5',
+                },
+                labels: {
+                    style: {
+                    color: '#3978D5',
+                    },
+                },
+                title: {
+                    text: 'Điểm Thang 4',
+                    style: {
+                        fontSize: '12px',
+                        fontWeight: 'bold',
+                        fontFamily: 'Arima Madurai',
+                    },
+                },
+                },
+            ],
+            tooltip: {
+                shared: false,
+                intersect: false,
+                y: {
+                formatter: function (y) {
+                    if (typeof y !== 'undefined') {
+                    return y.toFixed(2) + ' điểm';
+                    }
+                    return y;
+                },
+                },
+            },
+        }
+    const chartBar = new ApexCharts(document.querySelector('#chart-score-bar-student'), options)
+    chartBar.addEventListener("dataPointSelection", function(event, chartContext, config) {
+        
+        const columnIndex = config.dataPointIndex;
+
+        const msStValues = Object.values(data["msSt"]);
+        let mssv=msStValues[columnIndex];
+        console.log(mssv);
+        const redirectURL = `/infoStudent/${mssv}`
+        window.location.href = redirectURL;
+        console.log(redirectURL);
+      });
+    chartBar.render()
+
+
+    fetch('{% url "chart_pie_rank" maLop %}')
+    .then(response => response.json())
+    .then(data => {
+        const manager_color=[]
+        for (let [key, value] of Object.entries(data))
+        {
+            manager_color.push(color_Rank[key])
+        }
+        const options = {
+            chart: {
+                height: 'auto',
+                type: 'pie'
+            },
+            series: Object.values(data),
+            labels: Object.keys(data),
+            colors: manager_color,
+            title:{
+                text: 'Xếp loại',
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: 'Arima Madurai',
+                },
+            },
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        width: 200,
+                        height: 'auto'
+                    },
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+                }]
+        }
+        const chartPie = new ApexCharts(document.querySelector("#chart-score-pie"), options)
+        chartPie.render()
+    })
+    .finally(()=>{
+        loading.classList.add("d-none");
+    });
+})
+</script>

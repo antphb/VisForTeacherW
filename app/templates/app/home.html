@@ -1,0 +1,206 @@
+{% extends 'app/base.html' %}
+{% load static%}
+
+{% block name-title %}
+    Home
+{% endblock name-title %}
+
+{% block link-css %}
+    <link rel="stylesheet" href="{%static 'css/home.css'%}">
+    <style>
+        #loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            position: absolute;
+            width: 100%;
+            z-index: 9999;
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        .dashboardPoint{
+            background: #fff;
+            border-radius: 15px;
+        }
+        #loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            position: absolute;
+            width: 100%;
+            z-index: 9999;
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+{% endblock link-css %}
+    
+{% block main-content %}
+
+<div id="loading" class="d-none">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+
+<div class="home-dashboard d-block">
+    <div class="row ml-3 mr-3 h-100">
+        <div class="col-md-7 infoTe">
+            <div class="wraper-infote">
+                <h4 class="mt-2 font-weight-bold text-center"> Thông Tin Giảng Viên </h4>
+                <hr class="mt-0">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="image-avatar">
+                            <img class="img-fluid imgTeachcer" src="{%static 'image/no-avatar.png'%}" alt="">
+                        </div>
+                        <div class="text-center">
+                            <a href="{%url 'detail-teacher' %}" class="text-decoration-none">Xem chi tiết</a>
+                        </div>
+                    </div>
+                    <div class="col-md-8 infoTeacher">
+                        <div class="wrapper-infomation">
+                            <form action="">
+                                <div class="row form-group mb-0">
+                                        <label class="col-sm-6 col-form-label pl-0 pr-0">
+                                            <span>MSGV: </span>
+                                            <span class="font-weight-bold">{{giaovien.magv}}</span>
+                                        </label>
+                                        <label class="col-sm-6 col-form-label pl-0 pr-0">
+                                            <span>Chức danh: </span>
+                                            <span class="font-weight-bold">{{giaovien.chucdanh}}</span>
+                                        </label>
+                                </div>
+                                <div class="row form-group mb-0">
+                                    <label class="col-sm-6 col-form-label pl-0 pr-0">
+                                        <span>Họ tên: </span>
+                                        <span class="font-weight-bold">{{giaovien.tengv}}</span>
+                                    </label>
+                                    <label class="col-sm-6 col-form-label pl-0 pr-0">
+                                        <span>Giới tính: </span>
+                                        <span class="font-weight-bold">{{gioitinh}}</span>
+                                    </label>
+                                </div>
+                                <div class="row form-group mb-0">
+                                    <label class="col-sm-6 col-form-label pl-0 pr-0">
+                                        <span>Ngày sinh: </span>
+                                        <span class="font-weight-bold">{{ngaysinh}}</span>
+                                    </label>
+                                    <label class="col-sm-6 col-form-label pl-0 pr-0">
+                                        <span>Ngành: </span>
+                                        <span class="font-weight-bold">{{giaovien.nganh}}</span>
+                                    </label>
+                                </div>
+                                <div class="row form-group mb-0">
+                                    <label class="col-sm-6 col-form-label pl-0 pr-0">
+                                        <span>Nơi sinh: </span>
+                                        <span class="font-weight-bold">{{diachi}}</span>
+                                    </label>
+                                    <label class="col-sm-6 col-form-label pl-0 pr-0">
+                                        <span>Số điện thoại: </span>
+                                        <span class="font-weight-bold">{{giaovien.sdt}}</span>
+                                    </label>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="d-flex w-100 h-50 row">
+                <div class="col-md-12">
+                    <div class="infoSumClassStudy p-3 mb-3 h-100">
+                        <h5 class="text-center font-weight-bold">Thông tin</h5>
+                        <hr class="mt-0">
+                       <div class="row text-center">
+                            <div class="col-md-4">
+                                <i style="font-size: 30px;" class="fa-solid fa-school"></i>
+                                <p class="mb-0" style="font-size: 20px;">{{tongSoLop}}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="{%url 'tableStudent' 'Graduated'%}">
+                                    <i style="font-size: 30px;" class="fa-sharp fa-solid fa-graduation-cap"></i>
+                                </a>
+                                <p class="mb-0" style="font-size: 20px;">{{soluongTotnghiep}}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="{%url 'tableStudent' 'ALL'%}">
+                                    <i style="font-size: 30px;" class="fa-solid fa-user"></i>
+                                </a>
+                                <p class="mb-0" style="font-size: 20px;">{{sumStudentClass}}</p>
+                            </div>
+                       </div>
+                    </div>
+                </div>
+            </div>
+            <div class="w-100 h-50 row mb-3" style=" gap: 0">
+                <div class="col-md-6 h-100">
+                    <div class="wrapper infoClass">
+                        <h5 class="nameLop pt-2 text-center font-weight-bold">Lớp học</h5>
+                        <hr class="mt-0">
+                        <div class="">
+                            <select name="class" id="class" class="form-control select-blue-class font-weight-bold">
+                                <option value="ALL" selected>Tất cả</option>
+                                {% for class in classOfTeacher %}
+                                    <option value="{{class.malh}}">{{class.tenlh}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="text-center pt-2">
+                            <a href="{%url 'tableStudent' 'ALL' %}" class="text-decoration-none text-black link-class">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 h-100">
+                    <div class="wrapper infoSiSo">
+                        <h5 class="siSo pt-2 text-center font-weight-bold">Sĩ số</h5>
+                        <hr class="mt-0">
+                        <h1 class="text-center sumStudent" style="margin: auto; padding-bottom: 1.25rem;">{{sumStudentClass}}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="dashboardPoint mt-2 ml-3 mr-5 pt-3">
+    <div class="row p-0 m-0 justify-content-center align-content-between">
+        {% include 'chart/chart_Scatter_home.html' %}
+    </div>
+    <div class="row p-0 m-0 justify-content-center align-content-between">
+        {% include 'chart/chart_Bar_Rank_ALL_home.html' %}
+    </div>
+</div> 
+{% endblock main-content %}
+
+{% block script-js %}
+<script src="{%static 'js/home.js'%}"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.28.3/dist/apexcharts.min.js"></script>
+<script>
+    const loading = document.getElementById("loading");
+    loading.classList.remove("d-none");
+    
+    fetch('{%url "apiClass" %}')
+    .then(response => response.json())
+    .then(data => {
+
+        const selected=document.getElementById("class");
+
+        selected.addEventListener("change", function(){
+            const selectValue = selected.value.trim();
+            console.log(selectValue)
+            const sumStudentClass = document.querySelector(".sumStudent");
+            sumStudentClass.innerHTML = data[selectValue];
+            const linkClass = document.querySelector(".link-class");
+
+            const url = "{% url 'tableStudent' 'val' %}".replace('val', encodeURIComponent(selectValue));
+            
+            linkClass.setAttribute("href",url);
+        })
+    })
+    .finally(()=>{
+        loading.classList.add("d-none");
+    });
+</script>
+{% endblock script-js %}

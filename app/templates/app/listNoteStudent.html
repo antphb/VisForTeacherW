@@ -1,0 +1,302 @@
+{% extends 'app/base.html' %}
+{% load static%}
+
+{% block name-title %}
+    Danh sách lớp
+{% endblock name-title %}
+
+{% block link-css %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="{% static 'css/listNoteStudent.css' %}">
+{% endblock link-css %}
+    
+{% block main-content %}
+<h2 class="text-center"> {% block main-content-title %}
+    Danh sách ghi chú lớp {{tenlophoc}}
+{% endblock main-content-title %} </h2>
+    <div class="snippet-body">
+        <div class="container-fluid">
+            <div class="tableStudent ml-3 mr-3 table-scroll" id="table-scroll">
+                <div class="table-responsive-sm table-wrap p-2">
+                    <table id="example" class="table table-striped table-bordered row-border order-column" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th scope="col">STT</th>
+                                <th scope="col">Mã sinh viên</th>
+                                <th scope="col">Họ đệm</th>
+                                <th scope="col">Tên</th>
+                                <th scope="col">Nội dung</th>
+                                <th scope="col">Ngày ghi chú</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for n,dateNote in data %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex flex-wrap-nowrap justify-content-around">    
+                                            {{forloop.counter}}
+                                            <a class="btn text-info p-0" href="javascript:void(0)" data-toggle="modal" data-target="#ModalEDIT" data-id="{{n.id}}" data-mssv="{{n.masv.masv}}" data-hodem="{{n.masv.hodem}}" data-ten="{{n.masv.ten}}" data-noidung="{{n.noidung}}" data-date="{{dateNote}}" >
+                                                <i class="fas fa-pencil-alt ml-2"></i>
+                                            </a>
+                                            <a class="btn text-danger p-0" href="{% url 'detail-note-student' n.masv.masv n.id %}" onclick="return confirm('Bạn có chắc muốn xóa?')">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                            <a class="btn text-success p-0" href="javascript:void(0)" data-toggle="modal" data-target="#ModalADD" data-id="{{n.id}}" data-mssv="{{n.masv.masv}}" data-hodem="{{n.masv.hodem}}" data-ten="{{n.masv.ten}}">
+                                                <i class="fa-solid fa-plus"></i>
+                                                
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td><a href="{%url 'infoStudent' n.masv.masv%}">{{n.masv.masv}}</a></td>
+                                    <td>{{n.masv.hodem}}</td>
+                                    <td>{{n.masv.ten}}</td>
+                                    <td>{{n.noidung}}</td>
+                                    <td>{{dateNote}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal ADD -->
+    <div class="modal fade" id="ModalADD" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Thêm mới</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="addNoteForm">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-control" >Mssv: </label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="addMssv" class="form-control" readonly id="mssv">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-control" >Họ và tên: </label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="addHoTen" class="form-control" id="hoTenGhiChu" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-control" >Ngày ghi chú: </label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="date" name="addNgay" id="today" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-control" >Nội dung: </label>
+                        </div>
+                        <div class="col-md-8">
+                            <textarea name="addNoiDung" id="NoiDung" cols="30" rows="5" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mt-3">
+                            <input type="" name="add" id="ADDNote"  class="btn btn-primary w-100" value="Add">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+            <!-- <button type="button" class="btn btn-primary">Lưu</button> -->
+            </div>
+        </div>
+        </div>
+    </div>
+    <!-- Modal Edit -->
+    <div class="modal fade" id="ModalEDIT" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Chỉnh sửa</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="EditNoteForm">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-control" >Mssv: </label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="editMssv" class="form-control" readonly id="mssvEdit">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-control" >Họ và tên: </label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="editHoTen" class="form-control" id="hoTenGhiChuEdit" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-control" >Ngày ghi chú: </label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="date" name="editNgay" id="edittoday" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-control" >Nội dung: </label>
+                        </div>
+                        <div class="col-md-8">
+                            <textarea name="editNoiDung" id="NoiDungEdit" cols="30" rows="5" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mt-3">
+                            <input type="submit" name="edit" id="editNote"  class="btn btn-primary w-100" value="Save" onclick="if(!checkNoiDungNoteEDIT()) {return false;}">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+            <!-- <button type="button" class="btn btn-primary">Lưu</button> -->
+            </div>
+        </div>
+        </div>
+    </div>
+{% endblock main-content %}
+
+{% block script-js %}
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js" ></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="{%static 'js/listNoteStudent.js'%}"></script>
+    <script>
+        var today = new Date().toISOString().substr(0, 10);
+        document.querySelector("#today").value = today;
+        // document.querySelector("#edittoday").value = today;
+        
+        $('#ModalADD').on('show.bs.modal', function(event){
+            var button = $(event.relatedTarget);
+
+            // lấy các giá trị từ data-* attribute
+            var id = button.data('id');
+            var mssv = button.data('mssv');
+            var hodem = button.data('hodem');
+            var ten = button.data('ten');
+            
+            // Gán giá trị cho các phần tử trong modal
+            var modal = $(this);
+            var hoten= hodem.trim() + " " + ten.trim();
+            modal.find('#mssv').val(mssv);
+            modal.find('#hoTenGhiChu').val(hoten);
+            modal.find('#addNoteForm').attr('action', '/add-note-student/' + mssv);
+        })
+        
+        $('#ModalEDIT').on('show.bs.modal', function(event){
+            var button = $(event.relatedTarget);
+
+            // lấy các giá trị từ data-* attribute
+            var id = button.data('id');
+            var mssv = button.data('mssv');
+            var hodem = button.data('hodem');
+            var ten = button.data('ten');
+            var noidung = button.data('noidung');
+            var ngay = button.data('date');
+            
+            var temp = ngay.split("/");
+            //2018-07-22
+            //console.log(temp);
+            var transformedDateStr = temp[0]+ "-" +temp[1] + "-" + temp[2];
+            // console.log(transformedDateStr)
+            // console.log(transformedDateStr);
+            // console.log(id);
+
+            // Gán giá trị cho các phần tử trong modal
+            var modal = $(this);
+            var hoten= hodem.trim() + " " + ten.trim();
+            modal.find('#mssvEdit').val(mssv);
+            modal.find('#hoTenGhiChuEdit').val(hoten);
+            modal.find('#NoiDungEdit').val(noidung);
+
+            modal.find('#edittoday').val(transformedDateStr);
+            modal.find('#EditNoteForm').attr('action', '/edit-note-student/' + mssv + '/' + id);
+        })
+        
+        function checkNoiDungNoteADD()
+        {
+            var noiDung = document.querySelector("#NoiDung").value;
+            if(noiDung.trim() == "")
+            {
+                alert("Nội dung không được để trống");
+                return false;
+            }
+            return true;
+        }
+        
+        function checkNoiDungNoteEDIT()
+        {
+            var noiDung = document.querySelector("#NoiDungEdit").value;
+            var todayvalue = document.querySelector("#edittoday").value;
+            console.log(todayvalue<=today)
+            if(noiDung.trim() == "")
+            {
+                alert("Nội dung không được để trống");
+                return false;
+            }
+            else if(todayvalue > today)
+            {
+                alert("Ngày ghi chú không được lớn hơn ngày hiện tại");
+                return false;
+            }
+            else if (todayvalue == "")
+            {
+                alert("Ngày ghi chú không được để trống");
+                return false;
+            }
+            alert("Sửa thành công");
+            return true;
+        }
+
+        $('#ADDNote').click(function(){
+            var mssv = $('#mssv').val();
+            var ngay = $('#today').val();
+            var noidung = $('#NoiDung').val();
+            if (checkNoiDungNoteADD())
+            {
+                $.ajax({
+                    url: '/add-note-student/' + mssv,
+                    type: 'POST',
+                    data: {
+                        'mssv': mssv,
+                        'addNgay': ngay,
+                        'addNoiDung': noidung,
+                        'csrfmiddlewaretoken': '{{csrf_token}}'
+                    },
+                    success: function(data){
+                        alert("Thêm thành công");
+                        location.reload();
+                    },
+                    error: function(){
+                        alert("Thêm thất bại");
+                    }
+                })
+            }
+        })
+
+    </script>
+{% endblock script-js %}

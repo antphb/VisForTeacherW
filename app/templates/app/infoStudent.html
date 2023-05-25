@@ -1,0 +1,264 @@
+{% extends 'app/base.html' %}
+{% load static%}
+
+{% block name-title %}
+    Home
+{% endblock name-title %}
+
+{% block link-css %}
+    <link rel="stylesheet" href="{%static 'css/home.css'%}">
+    <style>
+        .dashboardPoint
+        {
+            background-color: #fff;
+            border-radius: 15px;
+        }
+    </style>
+    <style>
+        #loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            position: absolute;
+            width: 100%;
+            z-index: 9999;
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+{% endblock link-css %}
+    
+{% block main-content %}
+<div id="loading" class="d-none">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+<div class="home-dashboard d-block">
+    <div class="row ml-3 mr-3 h-100">
+        <div class="col-md-7 infoTe">
+            <div class="wraper-infote">
+                <h4 class="mt-2 font-weight-bold text-center"> Thông Tin Sinh Viên </h4>
+                <hr class="mt-0">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="image-avatar">
+                            <img class="img-fluid imgTeachcer" src="{%static 'image/no-avatar.png'%}" alt="">
+                        </div>
+                        <div class="text-center">
+                            <a href="{%url 'detailstudent' student.masv %}" class="text-decoration-none">Xem chi tiết</a>
+                        </div>
+                    </div>
+                    <div class="col-md-8 infoTeacher">
+                        <div class="wrapper-infomation">
+                            <form action="">
+                                <div class="row form-group mb-0">
+                                        <label class="col-sm-6 col-form-label pl-0 pr-0">
+                                            <span>MSSV: </span>
+                                            <span class="font-weight-bold">{{student.masv}}</span>
+                                        </label>
+                                        <label class="col-sm-6 col-form-label pl-0 pr-0">
+                                            <span>Lớp học: </span>
+                                            <span class="font-weight-bold">{{student.malop.tenlh}}</span>
+                                        </label>
+                                </div>
+                                <div class="row form-group mb-0">
+                                    <label class="col-sm-6 col-form-label pl-0 pr-0">
+                                        <span>Họ tên: </span>
+                                        <span class="font-weight-bold">{{student.hodem}} {{student.ten}}</span>
+                                    </label>
+                                    <label class="col-sm-6 col-form-label pl-0 pr-0">
+                                        <span>Khóa học: </span>
+                                        <span class="font-weight-bold">{{khoaHoc}}</span>
+                                    </label>
+                                </div>
+                                <div class="row form-group mb-0">
+                                    <label class="col-sm-6 col-form-label pl-0 pr-0">
+                                        <span>Giới tính: </span>
+                                        <span class="font-weight-bold">{{gioitinh}}</span>
+                                    </label>
+                                    <label class="col-sm-6 col-form-label pl-0 pr-0">
+                                        <span>Bậc đào tạo: </span>
+                                        <span class="font-weight-bold">Đại học</span>
+                                    </label>
+                                </div>
+                                <div class="row form-group mb-0">
+                                    <label class="col-sm-6 col-form-label pl-0 pr-0">
+                                        <span>Ngày sinh: </span>
+                                        <span class="font-weight-bold">{{ngaysinh}}</span>
+                                    </label>
+                                    <label class="col-sm-6 col-form-label pl-0 pr-0">
+                                        <span>Loại hình đào tạo: </span>
+                                        <span class="font-weight-bold">Chính quy</span>
+                                    </label>
+                                </div>
+                                <div class="row form-group mb-0">
+                                    <label class="col-sm-6 col-form-label pl-0 pr-0">
+                                        <span>Nơi Sinh: </span>
+                                        <span class="font-weight-bold">{{noisinh}}</span>
+                                    </label>
+                                    <label class="col-sm-6 col-form-label pl-0 pr-0">
+                                        <span>Ngành: </span>
+                                        <span class="font-weight-bold">{{nganhHoc}}</span>
+                                    </label>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="d-flex w-100 h-50 row">
+                <div class="col-md-12">
+                    <div class="infoSumClassStudy p-3 mb-3 h-100">
+                        <h5 class="text-center font-weight-bold">Ghi chú</h5>
+                        <hr class="mt-0">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="m-0 p-0 pl-3" style="font-size: 40px;">{{countGhiChu}}</p>
+
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <a class="btn text-success p-0" href="javascript:void(0)" data-toggle="modal" data-target="#exampleModal">
+                                            <i class="fa-solid fa-plus" style="font-size: 30px;"></i>
+                                        </a>
+                                        {% if countGhiChu > 0 %}
+                                            <a href="{%url 'list-note-student' 'all' student.masv %}" >
+                                                <i class="fa-solid fa-bell" style="font-size: 30px;"></i>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="w-100 h-50 row mb-3" style=" gap: 0">
+                <div class="col-md-6 h-100">
+                    <div class="wrapper infoClass">
+                        <h5 class="nameLop pt-2 text-center font-weight-bold">Lớp học</h5>
+                        <hr class="mt-0">
+                        <div class="">
+                            <select name="" id="" class="form-control select-blue-class font-weight-bold">
+                                <option value="DHKHDL16A" selected>DHKHDL16A</option>
+                                <option value="DHKHDL15A">DHKHDL15A</option>
+                            </select>
+                        </div>
+                        <div class="text-center pt-2">
+                            <a href="" class="text-decoration-none text-black">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 h-100">
+                    <div class="wrapper infoSiSo">
+                        <h5 class="siSo pt-2 text-center font-weight-bold">Trạng thái</h5>
+                        <hr class="mt-0">
+                        <h1 class="text-center" style="margin: auto; padding-bottom: 1.25rem; font-size: 25px">{{totnghieped}}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="dashboardPoint mt-5 ml-3 mr-5">
+    <h3 class="text-center pt-3">Thông tin điểm sinh viên </h3>
+    <div class="row p-0 m-0 justify-content-center align-content-between">
+        {% include 'chart/chart_radialbar_tinhchi_student_x.html'%}
+        {% include 'chart/chart_rankscore_student_x.html'%}
+    </div>
+    <div class="row p-0 m-0 justify-content-center align-content-between">
+        {% include 'chart/chart_bar_score_student_x.html'%}
+    </div>
+</div> 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Thêm mới</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form action="/add-note-student/{{student.masv}}" method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Mssv: </label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="addMssv" class="form-control" value={{student.masv}} readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Họ và tên: </label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="addHoTen" class="form-control" id="hoTenGhiChu" readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Ngày ghi chú: </label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="date" name="addNgay" id="today" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Nội dung: </label>
+                    </div>
+                    <div class="col-md-8">
+                        <textarea name="addNoiDung" id="NoiDung" cols="30" rows="5" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mt-3">
+                        <input type="submit" name="add" class="btn btn-primary w-100" value="Add" onclick="if(!checkNoiDungNote()) {return false;}">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+          <!-- <button type="button" class="btn btn-primary">Lưu</button> -->
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock main-content %}
+
+{% block script-js %}
+<script src="{%static 'js/home.js'%}"></script>
+<script>
+    var today = new Date().toISOString().substr(0, 10);
+    document.querySelector("#today").value = today;
+    // console.log(today);
+    var name = "{{student.hodem}}".trim() +" "+"{{student.ten}}".trim();
+    console.log(name);
+    document.querySelector("#hoTenGhiChu").value = name;
+
+
+    function checkNoiDungNote()
+    {
+        var noiDung = document.querySelector("#NoiDung").value;
+        if(noiDung.trim() == "")
+        {
+            alert("Nội dung không được để trống");
+            return false;
+        }
+        alert("Thêm thành công");
+        return true;
+    }
+    
+
+    
+
+</script>
+{% endblock script-js %}

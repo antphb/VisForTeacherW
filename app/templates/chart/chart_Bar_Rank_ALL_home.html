@@ -1,0 +1,236 @@
+<div class="col-md-6 chart">
+    <div id="chart-bar-rank-all" class="d-flex align-content-center justify-content-center">
+    </div>
+</div>
+<div class="col-md-6 chart">
+    <div id="chart-boxplot-score-all" class="d-flex align-content-center justify-content-center">
+        
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.28.3/dist/apexcharts.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<script>
+    fetch("{%url 'api_chart_bar_rank_all' %}")
+    .then(res => res.json())
+    .then(data => {
+        var categories = Object.keys(data);
+        var datas = [];
+
+        for (var i = 0; i < categories.length; i++) {
+            var category = categories[i];
+            var scoresByClass = data[category];
+
+            for (var className in scoresByClass) {
+                if (scoresByClass.hasOwnProperty(className)) {
+                    var score = scoresByClass[className];
+                    if (!datas[className]) {
+                        datas[className] = [];
+                    }
+
+                    datas[className].push(score);
+                }
+            }
+        }
+        var series = [];
+
+        for (var className in datas) {
+            if (datas.hasOwnProperty(className)) {
+                series.push({
+                    name: className,
+                    data: datas[className]
+                });
+            }
+        }
+        // console.log(series);
+        var options = {
+            chart: {
+                type: 'bar',
+                height: 350,
+                stacked: false,
+                toolbar: {
+                    show: true,
+                },
+                zoom: {
+                    enabled: true,
+                },
+            },
+            series: series,
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    borderRadius: 5,
+                    endingShape: 'rounded',
+                    columnWidth: '50%',
+                    dataLabels: {
+                        position: 'center', // Hiển thị labels trên đỉnh của cột
+                        total: {
+                            enabled: true,
+                            style: {
+                                fontSize: "13px",
+                                fontWeight: 900,
+                            },
+                        },
+                    },
+                },
+            },
+            dataLabels: {
+                enabled: true,
+            },
+            stroke: {
+                show: true,
+                width: 2,
+                colors: ['transparent']
+            },
+            xaxis: {
+                categories: categories,
+            },
+            yaxis: {
+                title: {
+                    text: 'Số học sinh đạt điểm',
+                    style: {
+                        fontSize:  '14px',
+                        fontWeight:  'bold',
+                        fontFamily:  'Arima Madurai',
+                        color:  '#263238'
+                    },
+                }
+            },
+            fill: {
+                opacity: 1
+            },
+            tooltip: {
+                y: {
+                    formatter: function(val) {
+                        return val;
+                    }
+                }
+            },
+            title:{
+                text: 'Biểu đồ số học sinh đạt điểm theo lớp',
+                margin: 10,
+                offsetX: 0,
+                offsetY: 0,
+                floating: false,
+                style: {
+                    fontSize:  '14px',
+                    fontWeight:  'bold',
+                    fontFamily:  'Arima Madurai',
+                    color:  '#263238'
+                },
+            },
+        }
+        var chart = new ApexCharts(document.querySelector("#chart-bar-rank-all"), options);
+        chart.render();
+    })
+
+    fetch("{%url 'api_chart_scatter_score' %}")
+    .then(res => res.json())
+    .then(data => {
+        const getLowerQuartile = (data) => {
+            const sortedData = data.sort((a, b) => a - b);
+            const midIndex = Math.floor(sortedData.length / 2);
+            
+            if (sortedData.length % 2 === 0) {
+                return median(sortedData.slice(0, midIndex));
+            } else {
+                return median(sortedData.slice(0, midIndex + 1));
+            }
+        }
+
+        const getUpperQuartile = (data) => {
+            const sortedData = data.sort((a, b) => a - b);
+            const midIndex = Math.floor(sortedData.length / 2);
+            
+            if (sortedData.length % 2 === 0) {
+                return median(sortedData.slice(midIndex));
+            } else {
+                return median(sortedData.slice(midIndex + 1));
+            }
+        }
+
+        function median(data) {
+            const sortedData = data.sort((a, b) => a - b);
+            const midIndex = Math.floor(sortedData.length / 2);
+
+            if (sortedData.length % 2 === 0) {
+                return (sortedData[midIndex - 1] + sortedData[midIndex]) / 2;
+            } else {
+                return sortedData[midIndex];
+            }
+        }   
+        // console.log(data);
+        key_x=Object.keys(data);
+        const datascore=[]
+        const hovertexts = [];
+
+        for (idsLop in key_x)
+        {
+            lop=key_x[idsLop];
+            diemsv=[]
+            tenSv=[]
+            for (sv in data[lop])
+            {
+                diemsv.push(data[lop][sv]);
+                tenSv.push(sv);
+            }
+            diemsvcopy=Object.assign({}, diemsv);
+            
+            const lowerQuartile = getLowerQuartile(diemsv); // Hàm để tính phân vị thấp nhất (lower quartile)
+            const upperQuartile = getUpperQuartile(diemsv); // Hàm để tính phân vị cao nhất (upper quartile)
+            const iqr = upperQuartile - lowerQuartile;
+            const lowerEnd = lowerQuartile - 1.5 * iqr; // Điểm dưới giới hạn cho giá trị ngoại lai
+            const upperEnd = upperQuartile + 1.5 * iqr; // Điểm trên giới hạn cho giá trị ngoại lai
+            diemngoilaiv=[]
+            for (let i = 0; i < diemsv.length; i++) {
+                if (diemsvcopy[i] < lowerEnd || diemsvcopy[i] > upperEnd) {
+                    hovertexts.push(
+                        {
+                            name: tenSv[i],
+                            y: diemsvcopy[i],
+                        }
+                    );
+                }
+                else
+                {
+                    hovertexts.push({
+                        name: tenSv[i],
+                        y: -1000,
+                    });
+                }
+            }
+
+            datascore.push({
+                y: diemsv,
+                name: lop,
+                type: 'box',
+            });
+        }
+
+        var layout = {
+            title: 'Biểu đồ hộp điểm hệ 4 của các lớp',
+            yaxis: {title: 'Điêm hệ 4'},
+            font: {
+                family: 'Arima Madurai',
+                size: 13,
+            }
+        };
+        let currentHoverTextIndex = 0;
+        for (let i = 0; i < datascore.length; i++) {
+            start= currentHoverTextIndex;
+            end= currentHoverTextIndex + datascore[i].y.length;
+            hovertextsSlice = hovertexts.slice(start, end)
+            sortHoverText=hovertextsSlice.sort((a, b) => b.y - a.y);
+            // console.log(sortHoverText);
+
+            datascore[i].hovertext = sortHoverText.map((item) => {
+                return item.name;
+            });
+            currentHoverTextIndex = end;
+            // console.log(hovertextsSlice);
+        }
+        // console.log(datascore);
+        Plotly.newPlot('chart-boxplot-score-all', datascore, layout);
+    })
+
+</script>

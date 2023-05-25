@@ -1,0 +1,224 @@
+{% extends 'app/base.html' %}
+{% load static%}
+
+{% block name-title %}
+    Detail
+{% endblock name-title %}
+
+{% block link-css %}
+<style>
+    .img-avatar img
+    {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 10px;
+        padding-top: 15px;
+    }
+    .img-avatar img {
+        float: none;
+        margin: 0 auto;
+        width: 50%;
+        height: 50%;
+        -webkit-border-radius: 50%!important;
+        -moz-border-radius: 50%!important;
+        border-radius: 50%!important;
+    }
+    .img-responsive {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        margin-top: 10px;
+    }
+    .caption {
+        margin-top: 20px;
+    }
+    .form-body label{
+        font-size: 15px;
+    }
+</style>
+{% endblock link-css %}
+    
+{% block main-content %}
+<div class="container" style="background-color: #fff; border-radius: 15px;">
+    <div class="row">
+        <div class="col-md-3 pl-4 pr-4">
+            <div class="img-avatar">
+                <img src="{%static 'image/no-avatar.png'%}" class="img-responsive" alt="">
+            </div>
+            <br>
+            <div class="form-group">
+                <div class="control-label">
+                    <span>MSSV:</span>
+                    <b>{{student.masv}}</b>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="control-label">
+                    <span>Họ tên:</span>
+                    <b>{{hoten}}</b>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="control-label">
+                    <span>Giới tính:</span>
+                    <b>{{gioitinh}}</b>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="caption">
+                <h3 class="text-center"><b>Thông tin học vấn</b></h3>
+            </div>
+            <hr class="m-0 mb-2">
+            <div class="col-md-12">
+                <div class="form-body">
+                    <div class="form-group">
+                        <div class="row mb-2">
+                            <label class="col-md-3">
+                                Trạng thái: <b>Đang học</b>
+                            </label>
+                            <label class="col-md-3">
+                                Mã hồ sơ: <b>20NV127934435</b>
+                            </label>
+                            <label class="col-md-6">
+                                Ngày vào trường: <b>15/10/2020</b>
+                            </label>
+                        </div>
+                        <div class="row  mb-2">
+                            <label class="col-md-6">
+                                Lớp học: <b>{{lophoc}}</b>
+                            </label>
+                            <label class="col-md-6">
+                                Cơ sở: <b>Cơ sở 1 (Thành phố Hồ Chí Minh)</b>
+                            </label>
+                        </div>
+                        <div class="row  mb-2">
+                            <label class="col-md-6">
+                                Bậc đào tạo: <b>Đại học</b>
+                            </label>
+                            <label class="col-md-6">
+                                Loại hình đào tạo: <b>Chính quy</b>
+                            </label>
+                        </div>
+                        <div class="row  mb-2">
+                            <label class="col-md-6">
+                                Khoa: <b>Khoa Công nghệ Thông tin</b>
+                            </label>
+                            <label class="col-md-6">
+                                Ngành: <b>Khoa học dữ liệu</b>
+                            </label>
+                        </div>
+                        <div class="row ">
+                            <label class="col-md-6">
+                                Chuyên ngành: <b>Khoa học dữ liệu</b>
+                            </label>
+                            <label class="col-md-6">
+                                Khóa học: <b>2020 - 2021</b>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-12">
+            <div class="caption">
+                <h3><b>Thông tin cá nhân</b></h3>
+            </div>
+            <hr>
+            <div class="form-body">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="row mb-2">
+                            <label class="col-md-4 col-xs-12">
+                                Ngày sinh: <b>{{ngaysinh}}</b>
+                            </label>
+                            <label class="col-md-2 col-xs-12">
+                                Dân tộc: <b>{{dantoc}}</b>
+                            </label>
+                            <label class="col-md-3 col-xs-12">
+                                Tôn giáo: <b></b>
+                            </label>
+                            <label class="col-md-3 col-xs-12">
+                                Khu vực: <b>Khu vực 1</b>
+                            </label>
+                        </div>
+                        <div class="row mb-2">
+                            <label class="col-md-4 col-xs-12">
+                                Số CMND: <b>12345678910</b>
+                            </label>
+                            <label class="col-md-2 col-xs-12">
+                                Ngày cấp: <b>30/05/2017</b>
+                            </label>
+                            <label class="col-md-6 col-xs-12">
+                                Nơi cấp: <b>{{noisinh}}</b>
+                            </label>
+                        </div>
+                        <div class="row mb-2">
+                            <label class="col-md-4 col-xs-6">
+                                Đối tượng: <b></b>
+                            </label>
+                            <label class="col-md-8 col-xs-6">
+                                Diện chính sách: <b></b>
+                            </label>
+                        </div>
+                        <div class="row mb-2">
+                            <label class="col-md-4 col-xs-6">
+                                Ngày vào Đoàn: <b></b>
+                            </label>
+                            <label class="col-md-8 col-xs-6">
+                                Ngày vào Đảng: <b></b>
+                            </label>
+                        </div>
+                        <div class="row mb-2">
+                            <label class="col-md-4 col-xs-6">
+                                Điện thoại: <b>{{sdt}}</b>
+                            </label>
+                            <label class="col-md-8 col-xs-6">
+                                Email: <b>{{email}}</b>
+                            </label>
+                        </div>
+                        <div class="row mb-2">
+                            <label class="col-md-12 col-xs-12">
+                                Địa chỉ liên hệ: <b>{{diachi}}</b>
+                            </label>
+                        </div>
+                        <div class="row mb-2">
+                            <label class="col-md-12 col-xs-12">
+                                Nơi sinh: <b>{{noisinh}}</b>
+                            </label>
+                        </div>
+                        <div class="row mb-2">
+                            <label class="col-md-12 col-xs-12">
+                                Hộ khẩu thường trú: <b>{{diachi}}</b>
+                            </label>
+                        </div>
+                        <div class="row mb-2">
+                            <label class="col-md-6 col-xs-6">
+                                Tên ngân hàng: <b>Ngân hàng Ngoại Thương Việt Nam - Vietcombank</b>
+                            </label>
+                            <label class="col-md-6 col-xs-6">
+                                Tên chi nhánh: <b>Chi nhánh {{noisinh}}</b>
+                            </label>
+                        </div>
+                        <div class="row mb-2">
+                            <label class="col-md-6 col-xs-6">
+                                Tên chủ tài khoản: <b>{{hoten}}</b>
+                            </label>
+                            <label class="col-md-6 col-xs-6">
+                                Số tài khoản: <b>1012638801</b>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+{% endblock main-content %}
+
+{% block script-js %}
+
+{% endblock script-js %}

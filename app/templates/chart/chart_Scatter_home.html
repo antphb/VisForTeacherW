@@ -1,0 +1,195 @@
+<div class="col-md-6 chart">
+  <div
+    id="chart-score-boxplot-student"
+    class="d-flex align-content-center justify-content-center"
+  ></div>
+</div>
+<div class="col-md-6 chart">
+  <div
+    id="chart-bar-sex-student"
+    class="d-flex align-content-center justify-content-center"
+  ></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.28.3/dist/apexcharts.min.js"></script>
+<script>
+  fetch('{% url "api_chart_scatter_score" %}')
+    .then((response) => response.json())
+    .then((data) => {
+      // console.log(Object.keys(data[Object.keys(data)[0]])[0])
+      const options = {
+        chart: {
+          type: "scatter",
+          height: 350,
+          zoom: {
+            enabled: true,
+            type: "xy",
+          },
+        },
+        series: Object.keys(data).map((key) => {
+          return {
+            name: key,
+            data: Object.values(data[key]),
+          };
+        }),
+        colors: [
+          "#008FFB",
+          "#00E396",
+          "#FEB019",
+          "#FF4560",
+          "#775DD0",
+          "#546E7A",
+          "#26a69a",
+          "#D10CE8",
+        ],
+        xaxis: {
+          type: "category",
+          categories: Object.keys(data),
+        },
+        yaxis: {
+          max: 4,
+          min: 0,
+          tickAmount: 5, // số lượng dấu chấm trên trục y
+        },
+        title: {
+          text: "Biểu đồ phân tán điểm hệ 4 của sinh viên",
+          margin: 10,
+          offsetX: 0,
+          offsetY: 0,
+          floating: false,
+          style: {
+            fontSize: "14px",
+            fontWeight: "bold",
+            fontFamily: "Arima Madurai",
+            color: "#263238",
+          },
+        },
+        tooltip: {
+          // chú thích họ và tên khi hover vào từng nút trên biểu đồ
+          custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+            return `<div class="arrow_box">
+                                <span class="text-primary">${
+                                  Object.keys(data)[seriesIndex] +
+                                  "-" +
+                                  Object.keys(
+                                    data[Object.keys(data)[seriesIndex]]
+                                  )[dataPointIndex] +
+                                  ": " +
+                                  series[seriesIndex][dataPointIndex] +
+                                  "/4.00"
+                                }</span>
+                            </div>`;
+          },
+          // hiển thị họ và tên ở dưới trục x khi hover vào từng nút trên biểu đồ
+          x: {
+            show: true,
+            formatter: function (val, opts) {
+              return Object.keys(data[Object.keys(data)[opts.seriesIndex]])[
+                val - 1
+              ];
+            },
+          },
+        },
+      };
+      const chart = new ApexCharts(
+        document.querySelector("#chart-score-boxplot-student"),
+        options
+      );
+      chart.render();
+    });
+
+  fetch('{%url "api_chart_bar_sex" %}')
+    .then((response) => response.json())
+    .then((data) => {
+      const categories = Object.keys(data);
+      const males = Object.values(data).map(item => item.Nam);
+      const females = Object.values(data).map(item => item.Nữ);
+
+      const chartData = [males, females];
+      var options = {
+        series: [
+          {
+            name: 'Nam',
+            data: chartData[0]
+          },
+          {
+            name: 'Nữ',
+            data: chartData[1]
+          }
+        ],
+        chart: {
+          type: "bar",
+          height: 350,
+          stacked: true,
+          toolbar: {
+            show: true,
+          },
+          zoom: {
+            enabled: true,
+          },
+        },
+        responsive: [
+          {
+            breakpoint: 480,
+            options: {
+              legend: {
+                position: "bottom",
+                offsetX: -10,
+                offsetY: 0,
+              },
+            },
+          },
+        ],
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            borderRadius: 10,
+            dataLabels: {
+              total: {
+                enabled: true,
+                style: {
+                  fontSize: "13px",
+                  fontWeight: 900,
+                },
+              },
+            },
+            
+          },
+        },
+        // stroke là đường viền của từng cột
+        stroke: {
+          width: 1,
+          colors: ["#fff"],
+        },
+        title: {
+          text: "Biểu đồ thể hiện tỉ lệ số lượng sinh viên theo giới tính",
+          margin: 10,
+          offsetX: 0,
+          offsetY: 0,
+          floating: false,
+          style: {
+            fontSize: "14px",
+            fontWeight: "bold",
+            fontFamily: "Arima Madurai",
+            color: "#263238",
+          },
+        },
+        xaxis: {
+          type: "category",
+          categories: categories,
+        },
+        legend: {
+          position: "right",
+          offsetY: 40,
+        },
+        // fill là màu của từng cột
+        fill: {
+          opacity: 1,
+        },
+      };
+      var chart = new ApexCharts(
+        document.querySelector("#chart-bar-sex-student"),
+        options
+      );
+      chart.render();
+    });
+</script>

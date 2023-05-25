@@ -1,0 +1,51 @@
+<div class="col-md-4 chart">
+    <h4 class="d-flex align-items-center justify-content-center font-weight-bold " style="font-size: 20px; height:9%; margin-bottom: 12px;">Tiến độ học tập</h4>
+    <hr class="mt-0 mb-0">
+    <div id="chart-radialbar-student-x" class="d-flex align-content-center justify-content-center">
+    </div>
+    <p class="text-center txtTCDH font-weight-bold" style="font-size: 20px;"></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.28.3/dist/apexcharts.min.js"></script>
+<script>
+    fetch('{% url "chart_Radialbar_SoTinChi_student_x" student.masv%}')
+    .then(response => response.json())
+    .then(data => {
+        const percentAllTC=data.allpercentTinChi
+        const percentTC= data.percentTinChi
+        const TCdahoc= data.tinchiStu
+        const tinchiAll=data.tinchiAll
+        const showTCDH=TCdahoc+"/"+tinchiAll
+        const options = {
+            chart: {
+              height: 340,
+              type: 'radialBar',
+            },
+            plotOptions: {
+              radialBar: {
+                dataLabels: {
+                  name: {
+                    fontSize: '16px',
+                  },
+                  value: {
+                    fontSize: '30px',
+                    fontWeight: 'bold',
+                  },
+                  total: {
+                    show: false,
+                    label: 'Tổng số tín chỉ',
+                    fontSize: '16px',
+                    formatter: function (w) {
+                      return tinchiAll
+                    }
+                  }
+                }
+              }
+            },
+            series: [percentAllTC, percentTC],
+            labels: ['Tổng: '+ tinchiAll +" tín chỉ", 'Đã học: ' + TCdahoc +" tín chỉ"],
+        }          
+    const chart = new ApexCharts(document.querySelector('#chart-radialbar-student-x'), options)
+    document.querySelector('.txtTCDH').innerHTML = showTCDH
+    chart.render()
+    })
+</script>

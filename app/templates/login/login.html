@@ -1,0 +1,123 @@
+{% load static%}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Arima+Madurai:wght@300&display=swap');
+        .img-re{
+            width: 100%;
+            /* max-width: 400px; */
+            height: 551.797px
+        }
+        body
+        {
+            background: url(https://gv.iuh.edu.vn/Content/login2/img/bg.jpg);
+            color: #000;
+            background-size: cover;
+            min-height: 100vh;
+            font-family: 'Arima Madurai';
+        }
+        .logo-top {
+            /* background: rgba(255,255,255,0.7); */
+            /* background: linear-gradient(#fff, #d0d0d0, #e8e8e8); */
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px 5px 0 0;
+        }
+        ul, li {
+            list-style-type: none;
+        }
+        .logo-top ul .logo-hd {
+            text-align: center;
+        }
+        .btn-100 {
+            width: 100%;
+            /* margin-top: 20px; */
+            /* margin-bottom: 20px; */
+            /* height: 60px; */
+            border-radius: 5px 5px!important;
+            border-bottom: 5px solid #0055b1!important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fruid ml-5 mr-5 pt-3">
+        <div class="row my-3">
+            <div class="col-md-8">
+                <div class="">
+                    <div id="carouselExampleFade" class="carousel slide carousel-fade" data-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="{%static 'image/img_login/login1.png'%}" class="img-re rounded" alt="login1">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="{%static 'image/img_login/login2.png'%}" class="img-re  rounded" alt="login2">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="{%static 'image/img_login/login3.png'%}" class="img-re rounded" alt="login3">
+                            </div>
+                        </div>
+                            <button class="carousel-control-prev" type="button" data-target="#carouselExampleFade" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-target="#carouselExampleFade" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                            </button>
+                    </div>
+                </div>
+            </div>
+            {% block main-content-page %}
+            <div class="col-sm-4" style="border: 1px solid rgb(172, 173, 173); border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) ; background-color: rgba(255,255,255,0.7);">
+                <div class="logo-top">
+                    <ul class="d-flex flex-column bd-highlight mb-3 mg-0 pl-0">
+                        <li class="p-2 bd-highlight logo-hd">
+                            <img src="{%static 'image/img_login/logoIUH2.png'%}" style="max-width:100%;">
+                        </li>
+                        <li class="p-2 bd-highlight name-hd text-center"><h4 style="font-weight: bold;">ĐĂNG NHẬP HỆ THỐNG</h4></li>
+                    </ul>
+                </div>
+                <form action="" method="post" novalidate class="shadow pt-5 pl-5 pr-5 pb-3"  style="border-radius: 15px;">
+                    {% csrf_token %}
+                    {%for fm in form%}
+                        {% comment %} cái này là cái label của form {% endcomment %}
+                        {{fm.label_tag}} {{fm}} 
+                        <small class="text-danger">
+                            {{fm.errors|striptags}}
+                        </small>
+                        <br>
+                    {%endfor%}
+                    <input type="submit" value="Đăng nhập" class=" btn btn-primary btn-100 mt-1"> 
+                    <br>
+                    <div class="text-center text-primary fw-bold">
+                    </div>
+                    {%if form.non_field_errors%}
+                        {%for error in form.non_field_errors%}
+                            <p class="alert alert-danger my-3">{{error}}</p>
+                        {%endfor%}
+                    {%endif%}
+                    <br>
+                    <small>
+                        <a href="{%url 'password_reset' %}">Quên mật khẩu? </a>
+                    </small>
+                </form>
+            </div>
+            {% endblock main-content-page %}
+        </div>
+    </div>
+</body>
+</html>

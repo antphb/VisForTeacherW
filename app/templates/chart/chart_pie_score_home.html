@@ -1,0 +1,38 @@
+{% comment %} <div class="col-md-5 chart">
+    <div id="chart-score-pie" class="d-flex align-content-center justify-content-center">
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.28.3/dist/apexcharts.min.js"></script>
+<script>
+    fetch('{% url "chart_pie_rank" %}')
+    .then(response => response.json())
+    .then(data => {
+      const options = {
+        chart: {
+            
+            height: 'auto',
+            type: 'pie'
+        },
+        series: Object.values(data),
+        labels: Object.keys(data),
+        colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0', '#546E7A'],
+        title:{
+            text: 'Xếp loại',
+        },
+        responsive: [{
+            breakpoint: 480,
+            options: {
+                chart: {
+                width: 200
+                },
+                legend: {
+                position: 'bottom'
+                }
+              }
+            }]
+      }
+  
+      const chart = new ApexCharts(document.querySelector("#chart-score-pie"), options)
+      chart.render()
+    })
+</script> {% endcomment %}
