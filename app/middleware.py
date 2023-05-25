@@ -5,7 +5,7 @@ class LoginRequiredMiddleware:
 
     def __call__(self, request):
         if not request.user.is_authenticated:
-            if not request.path.startswith('/login/') and not request.path.startswith('/password-reset/') and not request.path.startswith('/password-reset/done/') and not request.path.startswith('/admin/') and not request.path.startswith('/password-reset-confirm/') and not request.path.startswith('/password-reset-complete/'):
+            if not request.path.startswith('/login/') and not request.path.startswith('/password-reset/') and not request.path.startswith('/password-reset/done/') and not request.path.startswith('/admin/') and not request.path.startswith('/password-reset-confirm/') and not request.path.startswith('/password-reset-complete/') and not request.path.startwith('/staticfiles/'):
                 return redirect('/login/')
 
         response = self.get_response(request)
