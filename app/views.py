@@ -161,6 +161,7 @@ class tableStudent(View):
         if val=="ALL":
             if request.user.is_superuser:
                 students=Sinhvien.objects.all().order_by('ten')
+                # Lấy trường malh trong bảng lớp học
             else:
                 lophoc=[i.malh.strip() for i in Lophoc.objects.filter(magv=Giaovien.objects.get(magv=request.user).magv)]
                 students = Sinhvien.objects.filter(Q(malop__in=lophoc)).order_by('ten')
@@ -188,7 +189,8 @@ class tableStudent(View):
             diemtb4s.append(round(Hocluc.objects.filter(masv=student.masv)[0].thangdiem4,2))
             soTCs.append(Hocluc.objects.filter(masv=student.masv)[0].sotinchi)
             notes.append(Ghichu.objects.filter(masv=student.masv).count())
-        data=zip(students,ngaysinhs,gioitinhs,diemtb4s,soTCs,notes)
+        dslh = [x.strip() for x in Lophoc.objects.all().values_list('malh', flat=True)]
+        data=zip(students,ngaysinhs,gioitinhs,diemtb4s,soTCs,notes)        
         return render(request, 'app/tableStudent.html', locals())
     
 class APIChartBarScoreView(APIView):
@@ -510,7 +512,6 @@ class editNoteStudent(View):
     def post(self,request,mssv,id):
         ngay= request.POST['editNgay']
         noidung= request.POST['editNoiDung']
-
         ghichu= Ghichu.objects.get(masv=mssv, id=id)
         ghichu.noidung= noidung
         ghichu.ngay= ngay
@@ -544,6 +545,46 @@ class UpdateScore(View):
 class UpdateStudentList(View):
     def get(self,request):
         return render(request, 'app/UpdateStudent.html',locals())
+
+class editInfoStudent(View):
+    def post(self,request):
+        mssv= request.POST['mssv']
+        hoten= request.POST['hoten']
+        lop= request.POST['lop']
+        gioitinh= request.POST['gioitinh']
+        dantoc= request.POST['dantoc']
+        email= request.POST['email']
+        sodt= request.POST['sodt']
+        ngaysinh= request.POST['ngaysinh']
+        sonhatenduong= request.POST['sonhatenduong']
+        tinhthanh= request.POST['tinhthanh']
+        quanhuyen= request.POST['quanhuyen']
+        phuongxa= request.POST['phuongxa']
+        diachi= sonhatenduong + "," + phuongxa + "," + quanhuyen + "," + tinhthanh
+        tmpHoTen= hoten.split(" ")
+        hoten= tmpHoTen[-1]
+        hodem= " ".join(tmpHoTen[0:-1])
+        # print(mssv, hoten, lop, gioitinh, dantoc, email, sodt, ngaysinh, diachi)
+        sinhvien= Sinhvien.objects.get(masv=mssv)
+        sinhvien.hodem= hodem
+        sinhvien.ten= hoten
+        sinhvien.malop= Lophoc.objects.get(malh=lop)
+        sinhvien.gioitinh=  int(gioitinh)
+        sinhvien.dantoc= dantoc
+        sinhvien.email= email
+        sinhvien.sodt= sodt
+        sinhvien.ngaysinh= ngaysinh
+        sinhvien.noisinh= diachi
+        sinhvien.save()
+        return redirect(request.META.get('HTTP_REFERER'))
+
+class deleteInfoStudent(View):
+    def get(self,request,mssv):
+        chitietdiem= Chitietdiem.objects.filter(masv=mssv)
+        chitietdiem.delete()
+        sinhvien= Sinhvien.objects.get(masv=mssv)
+        sinhvien.delete()
+        return redirect(request.META.get('HTTP_REFERER'))
 
 def logout_user(request):
     logout(request)

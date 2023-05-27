@@ -53,6 +53,8 @@ urlpatterns = [
     path("edit-note-student/<mssv>/<id>",views.editNoteStudent.as_view(),name="edit-note-student"),
 
     path("edit-info-teacher/",views.editInfoTeacher.as_view(),name="edit-info-teacher"),
+    path("edit-info-student/",views.editInfoStudent.as_view(),name="edit-info-student"),
+    path("delete-info-student/<mssv>",views.deleteInfoStudent.as_view(),name="delete-info-student"),
 
     path("detail-teacher/",views.detailin4Teacher.as_view(),name="detail-teacher"),
 

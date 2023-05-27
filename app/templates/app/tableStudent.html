@@ -52,6 +52,9 @@ Danh sách sinh viên
                 <table id="example" class="table table-striped table-bordered" style="width:100%">
                     <thead>
                         <tr>
+                            {% if request.user.is_superuser %}
+                                <th scope="col">Chỉnh sửa</th>
+                            {% endif %}
                             <th scope="col">STT</th>
                             <th scope="col">Mã sinh viên</th>
                             <th scope="col">Họ đệm</th>
@@ -67,6 +70,18 @@ Danh sách sinh viên
                     <tbody>
                         {% for stu,ngaysinh,gioitinh,diem4,sotc,numofNote in data %}
                             <tr>
+                                {% if request.user.is_superuser %}
+                                    <td>
+                                        <div class="d-flex flex-wrap-nowrap justify-content-around">    
+                                            <a class="btn text-info p-0" href="javascript:void(0)" data-toggle="modal" data-target="#ModalEDIT" data-mssv="{{stu.masv}}" data-hodem="{{stu.hodem}}" data-ten="{{stu.ten}}" data-lop="{{stu.malop.malh}}" data-gioitinh="{{gioitinh}}" data-dantoc="{{stu.dantoc}}" data-email="{{stu.email}}" data-sdt="{{stu.sodt}}" data-ngaysinh="{{stu.ngaysinh}}" data-noisinh="{{stu.noisinh}}">
+                                                <i class="fas fa-pencil-alt ml-2"></i>
+                                            </a>
+                                            <a class="btn text-danger p-0" href="{%url 'delete-info-student' stu.masv%}" onclick="return confirm('Bạn có chắc muốn xóa?')">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                {% endif %}
                                 <td>{{forloop.counter}}</td>
                                 <td><a href="{%url 'infoStudent' stu.masv%}">{{stu.masv}}</a></td>
                                 <td>{{stu.hodem}}</td>
@@ -84,7 +99,6 @@ Danh sách sinh viên
                                     {% else %}
                                         {{numofNote}}
                                     {% endif %}
-
                                 </td>
                             </tr>
                         {% endfor %}
@@ -105,11 +119,358 @@ Danh sách sinh viên
                 {% include 'chart/chart_score_home.html' %}
             </div>
     {% endif %}
-</div> 
+</div>
+<!-- Modal Edit -->
+<div class="modal fade" id="ModalEDIT" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Chỉnh sửa thông tin</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+            <form method="post" id="EditNoteForm">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Mssv: </label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="editMssv" class="form-control" readonly id="mssvEdit">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Họ và tên: </label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="editHoTen" class="form-control" id="hoTenGhiChuEdit">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control">Lớp</label>
+                    </div>
+                    <div class="col-md-8">
+                        <select name="editLop" id="LopEdit" class="form-control">
+                            {% for lh in  dslh%}
+                                <option value={{lh}}>{{lh}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Giới tính</label>
+                    </div>
+                    <div class="col-md-8">
+                        <select name="editGioiTinh" id="GioiTinhEdit" class="form-control">
+                            <option value="1">Nam</option>
+                            <option value="0">Nữ</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control">Dân tộc</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="editDanToc" class="form-control" id="DanTocEdit">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Email</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="editEmail" class="form-control" id="EmailEdit">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Số điện thoại</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="editSoDT" class="form-control" id="SoDTEdit">
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control">Ngày sinh</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="date" name="editNgaySinh" class="form-control" id="NgaySinhEdit">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Nơi sinh: </label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <select name="TinhThanh" id="TinhThanh" class="form-control">
+                                    <option value="" >-- Chọn tỉnh/thành phố --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12">
+                                <select name="QuanHuyen" id="QuanHuyen" class="form-control">
+                                    <option value="">-- Chọn quận/huyện --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12">
+                                <select name="PhuongXa" id="PhuongXa" class="form-control">
+                                    <option value="">-- Chọn phường/xã --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12">
+                                <input type="text" class="form-control" name="SoNhaTenDuong" id="SoNhaTenDuong" placeholder="Số nhà, tên đường">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mt-3">
+                        <input type="" name="edit" id="editInFoStudent"  class="btn btn-primary w-100" value="Lưu">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+        <!-- <button type="button" class="btn btn-primary">Lưu</button> -->
+        </div>
+    </div>
+    </div>
+</div>
 {% endblock main-content %}
 
 {% block script-js %}
     <script type="text/javascript" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js" ></script>
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
     <script src="{%static 'js/tableStudent.js'%}"></script>
+    <script>
+    function getCodes(tinhthanh, quanhuyen, phuongxa) {
+        var maTinhThanh = "", maQuanHuyen = "", maPhuongXa = "";
+        
+        // gọi API và lấy danh sách tỉnh/thành phố
+        $.getJSON("https://provinces.open-api.vn/api/?depth=3", function(data) {
+            // tìm và lấy mã code của tỉnh/thành phố
+            $.each(data, function(index, value) {
+                if (value.name === tinhthanh) {
+                    // console.log(value.name);
+                    maTinhThanh = value.code;
+                    $("#TinhThanh").val(maTinhThanh).change();
+                    return false;
+                }
+            });
+
+            // nếu không tìm thấy tỉnh/tp thì trả về null
+            if (!maTinhThanh) {
+                console.log("Không tìm thấy mã code cho tỉnh/thành phố " + tinhthanh);
+                return null;
+            }
+
+            // gọi API và lấy danh sách quận/huyện theo mã code của tỉnh/thành phố đã tìm được
+            $.getJSON("https://provinces.open-api.vn/api/p/" + maTinhThanh + "?depth=2", function(data) {
+                // tìm và lấy mã code của quận/huyện
+                $.each(data.districts, function(index, value) {
+                    if (value.name === quanhuyen) {
+                        maQuanHuyen = value.code;
+                        $("#QuanHuyen").val(maQuanHuyen).change();
+                        return false;
+                    }
+                });
+
+                // nếu không tìm thấy quận/huyện thì trả về null
+                if (!maQuanHuyen) {
+                    console.log("Không tìm thấy mã code cho quận/huyện " + quanhuyen);
+                    return null;
+                }
+
+                // gọi API và lấy danh sách phường/xã theo mã code của quận/huyện đã tìm được
+                $.getJSON("https://provinces.open-api.vn/api/d/" + maQuanHuyen + "?depth=2", function(data) {
+                    // tìm và lấy mã code của phường/xã
+                    $.each(data.wards, function(index, value) {
+                        if (value.name === phuongxa) {
+                            maPhuongXa = value.code;
+                            $('#PhuongXa').val(maPhuongXa).change();
+                            return false;
+                        }
+                    });
+
+                    // nếu không tìm thấy phường/xã thì trả về null
+                    if (!maPhuongXa) {
+                        console.log("Không tìm thấy mã code cho phường/xã " + phuongxa);
+                        return null;
+                    }
+                });
+            });
+        });
+    };
+    
+    $(document).ready(function() {
+    // Gọi API và lấy danh sách tỉnh/thành phố
+        $.getJSON("https://provinces.open-api.vn/api/?depth=3", function(data) {
+            var html = "";
+            $.each(data, function(key, val) {
+            html += "<option value='" + val.code + "'>" + val.name + "</option>";
+            });
+            $('#TinhThanh').html(html);
+        });
+        
+        // Sự kiện khi chọn tỉnh thành phố
+        $('#TinhThanh').on('change', function() {
+            var codeTinhThanh = $(this).val();
+            // Gọi lại API và lấy danh sách quận/huyện tương ứng với tỉnh/thành phố đã chọn
+            $.getJSON("https://provinces.open-api.vn/api/p/" + codeTinhThanh + "?depth=2", function(data) {
+            var html = "";
+            $.each(data.districts, function(key, val) {
+                html += "<option value='" + val.code + "'>" + val.name + "</option>";
+            });
+            $('#QuanHuyen').html(html);
+            $('#PhuongXa').html("<option value=''>-- Chọn phường/xã --</option>");
+            });
+        });
+        
+        // Sự kiện khi chọn quận huyện
+        $('#QuanHuyen').on('change', function() {
+            var codeQuanHuyen = $(this).val();
+            // Gọi lại API và lấy danh sách phường/xã tương ứng với quận/huyện đã chọn
+            $.getJSON("https://provinces.open-api.vn/api/d/" + codeQuanHuyen + "?depth=2", function(data) {
+            var html = "";
+            $.each(data.wards, function(key, val) {
+                html += "<option value='" + val.code + "'>" + val.name + "</option>";
+            });
+            $('#PhuongXa').html(html);
+            });
+        });
+    });
+    $('#ModalEDIT').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        // console.log(button);
+        // lấy các giá trị từ data-* attribute
+        var mssv = button.data('mssv');
+        var hodem = button.data('hodem');
+        var ten = button.data('ten');
+        var lop = button.data('lop');
+        var gioitinh = button.data('gioitinh');
+        var dantoc = button.data('dantoc');
+        var email = button.data('email');
+        var sodt = button.data('sdt');
+        var ngaysinh = button.data('ngaysinh');
+        var noisinh = button.data('noisinh');
+        var gioitinh_1_0= gioitinh.trim() == "Nam" ? 1 : 0;
+
+        var parsedDate = new Date(ngaysinh);
+        var day = parsedDate.getDate();
+        var month = parsedDate.getMonth() + 1; // Cộng thêm 1 vì tháng trong JavaScript bắt đầu từ 0
+        var year = parsedDate.getFullYear();
+
+        var monthString = month < 10 ? "0"+month : month;
+        var dayString = day < 10 ? "0"+day : day;
+        // Tạo chuỗi mới theo định dạng mm/dd/yyyy
+        var formattedDate = year + "-" + monthString + "-" +  dayString;
+        //console.log(formattedDate);
+        var tmp= noisinh.trim().split(",");
+        // console.log(tmp);
+        if (tmp.length == 5)
+        {
+            var TinhThanh= tmp[4].trim();
+            var QuanHuyen= tmp[3].trim();
+            var PhuongXa= tmp[2].trim();
+            var sonhatenduong= tmp[0].trim() + "," + tmp[1].trim();
+            // console.log("TRue")
+        }
+        else
+        {
+            var TinhThanh= "Thành phố Hồ Chí Minh";
+            var QuanHuyen= tmp[2].trim();
+            var PhuongXa= "Phường 2";
+            var sonhatenduong= tmp[0].trim() + "," + tmp[1].trim();
+        }
+        // console.log(TinhThanh, QuanHuyen, PhuongXa, sonhatenduong);
+        getCodes(TinhThanh, QuanHuyen, PhuongXa);
+        // Gán giá trị cho các phần tử trong modal
+        var modal = $(this);
+        var hoten= hodem.trim() + " " + ten.trim();
+        modal.find('#mssvEdit').val(mssv);
+        modal.find('#hoTenGhiChuEdit').val(hoten);
+        modal.find('#LopEdit').val(lop.trim());
+        modal.find('#GioiTinhEdit').val(gioitinh_1_0);
+        modal.find('#DanTocEdit').val(dantoc.trim());
+        modal.find('#EmailEdit').val(email.trim());
+        modal.find('#SoDTEdit').val(sodt);
+        modal.find('#NgaySinhEdit').val(formattedDate);
+        modal.find('#NoiSinhEdit').val(noisinh.trim());
+        modal.find('#SoNhaTenDuong').val(sonhatenduong);
+    })
+
+    function checkInfoEDIT()
+    {
+        var hoten= $("#hoTenGhiChuEdit").val();
+        var lop= $("#LopEdit").val();
+        var gioitinh= $("#GioiTinhEdit").val();
+        var dantoc= $("#DanTocEdit").val();
+        var email= $("#EmailEdit").val();
+        var sodt= $("#SoDTEdit").val();
+        var ngaysinh= $("#NgaySinhEdit").val();
+        var noisinh= $("#NoiSinhEdit").val();
+        var sonhatenduong= $("#SoNhaTenDuong").val();
+        var tinhthanh= $("#TinhThanh option:selected").html();
+        var quanhuyen= $("#QuanHuyen option:selected").html();
+        var phuongxa= $("#PhuongXa option:selected").html();
+        if (hoten == "" || lop == "" || gioitinh == "" || dantoc == "" || email == "" || sodt == "" || ngaysinh == "" || noisinh == "" || sonhatenduong == "" || tinhthanh == "" || quanhuyen == "" || phuongxa == "")
+        {
+            alert("Vui lòng nhập đầy đủ thông tin");
+            return false;
+        }
+        return true;
+    }
+
+    $("#editInFoStudent").click(
+        function()
+        {
+            if (checkInfoEDIT())
+            {
+                $.ajax({
+                    url: "/edit-info-student/",
+                    type: "POST",
+                    data:{
+                        'mssv': $("#mssvEdit").val(),
+                        'hoten': $("#hoTenGhiChuEdit").val(),
+                        'lop': $("#LopEdit").val(),
+                        'gioitinh': $("#GioiTinhEdit").val(),
+                        'dantoc': $("#DanTocEdit").val(),
+                        'email': $("#EmailEdit").val(),
+                        'sodt': $("#SoDTEdit").val(),
+                        'ngaysinh': $("#NgaySinhEdit").val(),
+                        'sonhatenduong': $("#SoNhaTenDuong").val(),
+                        'tinhthanh': $("#TinhThanh option:selected").html(),
+                        'quanhuyen': $("#QuanHuyen option:selected").html(),
+                        'phuongxa': $("#PhuongXa option:selected").html(),
+                        'csrfmiddlewaretoken': '{{csrf_token}}'
+                    },
+                    success: function(data){
+                        alert("Cập nhập thông tin thành công");
+                        location.reload();
+                    },
+                    error: function(){
+                        alert("Cập nhập thông tin thất bại");
+                    }
+                })
+            }
+        }
+    );
+    </script>
+
 {% endblock script-js %}
