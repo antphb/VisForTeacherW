@@ -11,6 +11,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.mail import send_mail
 from .models import *
+
+# {{request.user.is_superuser}}
 # Create your views here.
 sotinChi= {
     "13": 120,
@@ -100,20 +102,34 @@ class home(View):
         gioitinh="Nam" if giaovien.gioitinh else "Nữ"
         ngaysinh=giaovien.ngaysinh.strftime('%d/%m/%Y')
         diachi=giaovien.diachi.split("-")[3]
-        classOfTeacher=Lophoc.objects.filter(magv=giaovien.magv)
-        tongSoLop=classOfTeacher.count()
-        # print(classOfTeacher)
-        soluongTotnghiep=len(Graduate_student_list(request.user))
         sumStudentClass=0
-        
+        if request.user.is_superuser:
+            try:
+                giaoviens=Giaovien.objects.all()
+                classOfTeacher=Lophoc.objects.all()
+                tongSoLop=classOfTeacher.count()
+                tongSoSinhVien=Sinhvien.objects.all().count()
+                soluongTotnghiep=0
+                for gv in giaoviens:
+                    soluongTotnghiep+=len(Graduate_student_list(gv.magv))
+            except:
+                pass
+        else:
+            classOfTeacher=Lophoc.objects.filter(magv=giaovien.magv)
+            tongSoLop=classOfTeacher.count()
+            # print(classOfTeacher)
+            soluongTotnghiep=len(Graduate_student_list(request.user))
         for sumClass in classOfTeacher:
             sumStudentClass+=Sinhvien.objects.filter(malop=sumClass.malh).count()
         return render(request, 'app/home.html',locals())
 
 class base(View):
     def get(self, request):
-        giaovien=Giaovien.objects.get(magv=request.user)
-        classOfTeacher=Lophoc.objects.filter(magv=giaovien.magv)
+        if request.user.is_superuser:
+            classOfTeacher=Lophoc.objects.all()
+        else:
+            giaovien=Giaovien.objects.get(magv=request.user)
+            classOfTeacher=Lophoc.objects.filter(magv=giaovien.magv)
         dict_class={}
         for cOT in classOfTeacher:
             dict_class[cOT.malh.strip()]=cOT.tenlh.strip()
@@ -122,8 +138,12 @@ class base(View):
 
 class APIClass(APIView):
     def get(self, request):
-        giaovien=Giaovien.objects.get(magv=request.user)
-        classOfTeacher=Lophoc.objects.filter(magv=giaovien.magv)
+        if request.user.is_superuser:
+            giaovien=Giaovien.objects.all()
+            classOfTeacher=Lophoc.objects.all()
+        else:
+            giaovien=Giaovien.objects.get(magv=request.user)
+            classOfTeacher=Lophoc.objects.filter(magv=giaovien.magv)
         # print(classOfTeacher)
         class_List_dict={}
         sumStudentClass=0
@@ -139,11 +159,20 @@ class tableStudent(View):
     def get(self, request,val):
         val=val.strip()
         if val=="ALL":
-            lophoc=[i.malh.strip() for i in Lophoc.objects.filter(magv=Giaovien.objects.get(magv=request.user).magv)]
-            students = Sinhvien.objects.filter(Q(malop__in=lophoc)).order_by('ten')
+            if request.user.is_superuser:
+                students=Sinhvien.objects.all().order_by('ten')
+            else:
+                lophoc=[i.malh.strip() for i in Lophoc.objects.filter(magv=Giaovien.objects.get(magv=request.user).magv)]
+                students = Sinhvien.objects.filter(Q(malop__in=lophoc)).order_by('ten')
             # print(students)
         elif val=="Graduated":
-            students=Graduate_student_list(request.user)
+            if request.user.is_superuser:
+                giaovien=Giaovien.objects.all()
+                students=[]
+                for gv in giaovien:
+                    students.extend(Graduate_student_list(gv.magv))
+            else:
+                students=Graduate_student_list(request.user)
         else:
             students = Sinhvien.objects.filter(malop=val).order_by('ten')
         maLop=val
@@ -165,8 +194,11 @@ class tableStudent(View):
 class APIChartBarScoreView(APIView):
     def get(self, request,val):
         if val=="ALL":
-            lophoc=[i.malh.strip() for i in Lophoc.objects.filter(magv=Giaovien.objects.get(magv=request.user).magv)]
-            students = Sinhvien.objects.filter(Q(malop__in=lophoc)).order_by('ten')
+            if request.user.is_superuser:
+                students=Sinhvien.objects.all().order_by('ten')
+            else:
+                lophoc=[i.malh.strip() for i in Lophoc.objects.filter(magv=Giaovien.objects.get(magv=request.user).magv)]
+                students = Sinhvien.objects.filter(Q(malop__in=lophoc)).order_by('ten')
         else:
             students = Sinhvien.objects.filter(malop=val).order_by('ten')
 
@@ -184,7 +216,10 @@ class APIChartBarScoreView(APIView):
     
 class APIChartScatterScoreView(APIView):
     def get(self, request):
-        lophoc=[i.malh.strip() for i in Lophoc.objects.filter(magv=Giaovien.objects.get(magv=request.user).magv)]
+        if request.user.is_superuser:
+            lophoc=[i.malh.strip() for i in Lophoc.objects.all()]
+        else:
+            lophoc=[i.malh.strip() for i in Lophoc.objects.filter(magv=Giaovien.objects.get(magv=request.user).magv)]
         dictLop_Score={}
         for grade in lophoc:
             students = Sinhvien.objects.filter(Q(malop=grade)).order_by('ten')
@@ -199,7 +234,10 @@ class APIChartScatterScoreView(APIView):
 
 class APIChartBarSexView(APIView):
     def get(self, request):
-        lophoc=[i.malh.strip() for i in Lophoc.objects.filter(magv=Giaovien.objects.get(magv=request.user).magv)]
+        if request.user.is_superuser:
+            lophoc=[i.malh.strip() for i in Lophoc.objects.all()]
+        else:
+            lophoc=[i.malh.strip() for i in Lophoc.objects.filter(magv=Giaovien.objects.get(magv=request.user).magv)]
         students = Sinhvien.objects.filter(Q(malop__in=lophoc)).order_by('ten')
         sexs={}
         for grade in lophoc:
@@ -217,7 +255,10 @@ class APIChartBarSexView(APIView):
 
 class APIChartBarRankALLView(APIView):
     def get(self,request):
-        lophoc=[i.malh.strip() for i in Lophoc.objects.filter(magv=Giaovien.objects.get(magv=request.user).magv)]
+        if request.user.is_superuser:
+            lophoc=[i.malh.strip() for i in Lophoc.objects.all()]
+        else:
+            lophoc=[i.malh.strip() for i in Lophoc.objects.filter(magv=Giaovien.objects.get(magv=request.user).magv)]
         students = Sinhvien.objects.filter(Q(malop__in=lophoc)).order_by('ten')
         ranks={}
         # {"xuất sắc": {"KHDL16A": 10, "KHMT": 6}}
@@ -244,8 +285,11 @@ class APIChartBarRankALLView(APIView):
 class APIChartPieRankView(APIView):
     def get(self, request,val):
         if val=="ALL":
-            lophoc=[i.malh.strip() for i in Lophoc.objects.filter(magv=Giaovien.objects.get(magv=request.user).magv)]
-            students = Sinhvien.objects.filter(Q(malop__in=lophoc)).order_by('ten')
+            if request.user.is_superuser:
+                students=Sinhvien.objects.all().order_by('ten')
+            else:
+                lophoc=[i.malh.strip() for i in Lophoc.objects.filter(magv=Giaovien.objects.get(magv=request.user).magv)]
+                students = Sinhvien.objects.filter(Q(malop__in=lophoc)).order_by('ten')
         else:
             students = Sinhvien.objects.filter(malop=val).order_by('ten')
         ranks={}
@@ -496,6 +540,10 @@ class editInfoTeacher(View):
 class UpdateScore(View):
     def get(self,request):
         return render(request, 'app/UpdateScore.html',locals())
+
+class UpdateStudentList(View):
+    def get(self,request):
+        return render(request, 'app/UpdateStudent.html',locals())
 
 def logout_user(request):
     logout(request)

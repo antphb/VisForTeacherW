@@ -57,6 +57,7 @@ urlpatterns = [
     path("detail-teacher/",views.detailin4Teacher.as_view(),name="detail-teacher"),
 
     path("update-list-score/",views.UpdateScore.as_view(),name="update-list-score"),
+    path("update-student-list/", views.UpdateStudentList.as_view(), name="update-student-list"),
 
     # Login 
     path('login/',auth_views.LoginView.as_view(template_name='login/login.html', authentication_form=LoginForm),name='login'),

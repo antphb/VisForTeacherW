@@ -83,13 +83,19 @@
                         <li><a class="link_name" href="#">Danh sách Ghi chú</a></li>
                     </ul>
                 </li>
+                {% if request.user.is_superuser %}
                 <li>
-                    <a href="#">
-                        <i class="fa-solid fa-house"></i>
-                        <span class="link_name">Dashboard 4</span>
+                    <a href="{%url 'update-student-list'%}"  style="height: 50px; font-size: 12px;">
+                        <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                        <span class="link_name">Cập nhật danh sách sinh viên</span>
+                        <i class="fa-solid fa-caret-down arrow"></i>
                     </a>
+                    <ul class="sub-menu blank">
+                        <li>
+                            <a class="link_name" href="{%url 'update-student-list'%}">Cập nhật danh sách sinh viên</a>
+                        </li>
+                    </ul>
                 </li>
-
                 <li>
                     <a href="{%url 'update-list-score'%}"  style="height: 50px; font-size: 12px;">
                         <i class="fa-sharp fa-solid fa-rotate"></i>
@@ -99,6 +105,8 @@
                         <li><a class="link_name" href="{%url 'update-list-score'%}">Cập nhật danh sách điểm</a></li>
                     </ul>
                 </li>
+            
+                {% endif %}
 
                 <li>
                     <a href="{% url 'change_password' %}"  style="height: 50px; font-size: 12px;">
@@ -138,7 +146,11 @@
         <section class="home-section">
             <div class="home-content">
                 <i class="fa-solid fa-bars"></i>
-                <span class="text">Home</span>
+                <span class="text">
+                    {% block page-title %}
+                        Home
+                    {% endblock page-title %}
+                </span>
             </div>
             {% block main-content %}
             

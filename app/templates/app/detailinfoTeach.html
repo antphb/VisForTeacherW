@@ -4,7 +4,9 @@
 {% block name-title %}
     Detail Information Teacher
 {% endblock name-title %}
-
+{% block page-title %}
+Chi tiết thông tin giáo viên
+{% endblock page-title %}
 
 {% block link-css %}
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -48,7 +50,7 @@
                 </div>
                 <div class="col-md-2">
                     <a class="btn profile-edit-btn" href="javascript:void(0)" data-toggle="modal" data-target="#ModalEDIT" data-msgv="{{giaovien.magv}}" data-hoten="{{giaovien.tengv}}" data-email="{{giaovien.email}}" data-sdt="{{giaovien.sdt}}" data-diachi="{{giaovien.diachi}}">
-                        Edit Profile
+                        Chỉnh sửa
                     </a>
                 </div>
             </div>
