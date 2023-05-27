@@ -52,6 +52,11 @@ Thông tin sinh viên
                         </div>
                         <div class="text-center">
                             <a href="{%url 'detailstudent' student.masv %}" class="text-decoration-none">Xem chi tiết</a>
+                            {% if request.user.is_superuser %}
+                                <a class="text-decoration-none" class="btn text-info p-0" href="javascript:void(0)" data-toggle="modal" data-target="#ModalEDIT" data-mssv="{{student.masv}}" data-hodem="{{student.hodem}}" data-ten="{{student.ten}}" data-lop="{{student.malop.malh}}" data-gioitinh="{{gioitinh}}" data-dantoc="{{student.dantoc}}" data-email="{{student.email}}" data-sdt="{{student.sodt}}" data-ngaysinh="{{student.ngaysinh}}" data-noisinh="{{student.noisinh}}"
+                                >| Chỉnh sửa</a>
+                                <a href="{%url 'delete-info-student' student.masv%}" onclick="return confirm('Bạn có chắc muốn xóa sinh viên này không?')" class="text-decoration-none">| Xóa</a>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="col-md-8 infoTeacher">
@@ -143,17 +148,9 @@ Thông tin sinh viên
             <div class="w-100 h-50 row mb-3" style=" gap: 0">
                 <div class="col-md-6 h-100">
                     <div class="wrapper infoClass">
-                        <h5 class="nameLop pt-2 text-center font-weight-bold">Lớp học</h5>
+                        <h5 class="nameLop pt-3 text-center font-weight-bold" style="font-size: 14px">Điểm tích lũy hệ 4 và hệ 10</h5>
                         <hr class="mt-0">
-                        <div class="">
-                            <select name="" id="" class="form-control select-blue-class font-weight-bold">
-                                <option value="DHKHDL16A" selected>DHKHDL16A</option>
-                                <option value="DHKHDL15A">DHKHDL15A</option>
-                            </select>
-                        </div>
-                        <div class="text-center pt-2">
-                            <a href="" class="text-decoration-none text-black">Xem chi tiết</a>
-                        </div>
+                        <h1 class="text-center" style="margin: auto; padding-bottom: 1.25rem; font-size: 25px">{{hoclucStudent.thangdiem4}}/{{hoclucStudent.thangdiem10}}</h1>
                     </div>
                 </div>
                 <div class="col-md-6 h-100">
@@ -236,6 +233,7 @@ Thông tin sinh viên
       </div>
     </div>
 </div>
+{% include "app/modal_Edit_student.html" %}
 {% endblock main-content %}
 
 {% block script-js %}
@@ -247,8 +245,6 @@ Thông tin sinh viên
     var name = "{{student.hodem}}".trim() +" "+"{{student.ten}}".trim();
     console.log(name);
     document.querySelector("#hoTenGhiChu").value = name;
-
-
     function checkNoiDungNote()
     {
         var noiDung = document.querySelector("#NoiDung").value;
@@ -260,9 +256,6 @@ Thông tin sinh viên
         alert("Thêm thành công");
         return true;
     }
-    
-
-    
-
 </script>
+<script src="{%static 'js/editIn4Student.js'%}"></script>
 {% endblock script-js %}

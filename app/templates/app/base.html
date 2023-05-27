@@ -65,7 +65,7 @@
                     </ul>
                 </li>
 
-                <li>
+                {% comment %} <li>
                     <a href="{%url 'tableStudent' 'DHKHDL16A' %}" style="height: 50px; font-size: 12px;">
                         <i class="fa-solid fa-table-list"></i>
                         <span class="link_name">Danh sách lớp</span>
@@ -82,7 +82,7 @@
                     <ul class="sub-menu blank">
                         <li><a class="link_name" href="#">Danh sách Ghi chú</a></li>
                     </ul>
-                </li>
+                </li> {% endcomment %}
                 {% if request.user.is_superuser %}
                 <li>
                     <a href="{%url 'update-student-list'%}"  style="height: 50px; font-size: 12px;">

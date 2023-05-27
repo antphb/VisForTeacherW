@@ -1,0 +1,131 @@
+<!-- Modal Edit -->
+<div class="modal fade" id="ModalEDIT" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Chỉnh sửa thông tin</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+            <form method="post" id="EditNoteForm">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Mssv: </label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="editMssv" class="form-control" readonly id="mssvEdit">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Họ và tên: </label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="editHoTen" class="form-control" id="hoTenGhiChuEdit">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control">Lớp</label>
+                    </div>
+                    <div class="col-md-8">
+                        <select name="editLop" id="LopEdit" class="form-control">
+                            {% for lh in  dslh%}
+                                <option value={{lh}}>{{lh}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Giới tính</label>
+                    </div>
+                    <div class="col-md-8">
+                        <select name="editGioiTinh" id="GioiTinhEdit" class="form-control">
+                            <option value="1">Nam</option>
+                            <option value="0">Nữ</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control">Dân tộc</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="editDanToc" class="form-control" id="DanTocEdit">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Email</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="editEmail" class="form-control" id="EmailEdit">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Số điện thoại</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="editSoDT" class="form-control" id="SoDTEdit">
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control">Ngày sinh</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="date" name="editNgaySinh" class="form-control" id="NgaySinhEdit">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Nơi sinh: </label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <select name="TinhThanh" id="TinhThanh" class="form-control">
+                                    <option value="" >-- Chọn tỉnh/thành phố --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12">
+                                <select name="QuanHuyen" id="QuanHuyen" class="form-control">
+                                    <option value="">-- Chọn quận/huyện --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12">
+                                <select name="PhuongXa" id="PhuongXa" class="form-control">
+                                    <option value="">-- Chọn phường/xã --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12">
+                                <input type="text" class="form-control" name="SoNhaTenDuong" id="SoNhaTenDuong" placeholder="Số nhà, tên đường">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mt-3">
+                        <input type="" name="edit" id="editInFoStudent"  class="btn btn-primary w-100" value="Lưu">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+        </div>
+    </div>
+    </div>
+</div>

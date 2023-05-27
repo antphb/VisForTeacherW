@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.mail import send_mail
 from .models import *
-
+import pandas as pd
 # {{request.user.is_superuser}}
 # Create your views here.
 sotinChi= {
@@ -308,11 +308,13 @@ class infomationStudent(View):
     def get(self, request, val):
         student = Sinhvien.objects.get(masv=val)
         hoclucStudent=Hocluc.objects.get(masv=student.masv)
+        if request.user.is_superuser:
+            dslh = [x.strip() for x in Lophoc.objects.all().values_list('malh', flat=True)]
         tinchiStu=hoclucStudent.sotinchi
 
         noisinh=student.noisinh.split(",")[-1].strip()
         gioitinh="Nam" if student.gioitinh==True else "Nữ"
-        ngaysinh=student.ngaysinh.strftime('%Y/%m/%d')
+        ngaysinh=student.ngaysinh.strftime('%d/%m/%Y')
         countGhiChu=Ghichu.objects.filter(masv=val).count()
 
         # 4203002027 chứng chỉ toeic
@@ -541,6 +543,12 @@ class editInfoTeacher(View):
 class UpdateScore(View):
     def get(self,request):
         return render(request, 'app/UpdateScore.html',locals())
+    def post(self, request, path):
+        df2 = pd.read_excel("/content/drive/MyDrive/MyData/ketqua_HK3_K16DS.xlsx")
+        df2.columns = df2.iloc[7].tolist()
+        df2 = df2.iloc[8:].dropna(subset=['Họ đệm']).reset_index(drop=True)
+        print(df2.head())
+        return redirect(request.META.get('HTTP_REFERER'))
 
 class UpdateStudentList(View):
     def get(self,request):
