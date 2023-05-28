@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import user_passes_test
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.mail import send_mail
+from django.views.decorators.csrf import csrf_exempt,csrf_protect 
 from .models import *
 import pandas as pd
 # {{request.user.is_superuser}}
