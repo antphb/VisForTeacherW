@@ -110,7 +110,6 @@ DATABASES={
     # }
     # conn_max_age: thời gian kết nối tối đa
     'default': dj_database_url.parse(env('DATABASES_URL')),
-
 }
 
 # Password validation
