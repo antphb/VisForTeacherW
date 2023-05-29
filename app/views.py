@@ -380,7 +380,7 @@ class APIChartBarScoreStudentXView(APIView):
         mahpHoc={}
         for i in diemhocphan:
             namehp=i.mahp.tenhp.strip()
-            if namehp =="Tiếng Anh 1" or namehp == "Tiếng Anh 2" or namehp=="Chứng chỉ TOEIC 450":
+            if namehp =="Tiếng anh 1" or namehp == "Tiếng Anh 2" or namehp=="Chứng chỉ TOEIC 450":
                 continue
             score_hocphan[namehp]=round(i.diemhp,2)
             mahpHoc[i.mahp.mahp]=namehp
@@ -432,7 +432,7 @@ class APISummaryRankSubjectStudentX(APIView):
         rank_thang4={}
         for i in diemhocphan:
             namehp=i.mahp.tenhp.strip()
-            if namehp =="Tiếng Anh 1" or namehp == "Tiếng Anh 2":
+            if namehp =="Tiếng anh 1" or namehp == "Tiếng Anh 2":
                 continue
             rankdiem=i.diemhp
             if rankdiem>=9 and rankdiem<=10:
@@ -588,8 +588,8 @@ def sp(string):
     return string.split('(')[0]   
 
 
-def fun_update_Score():
-    df_ng = pd.read_excel("media/curriculum_KHDL_K16.xlsx")
+def fun_update_Score(file_nien_giam, file_diem):
+    df_ng = pd.read_excel(file_nien_giam)
     df_ng.columns = df_ng.iloc[6].tolist()
     df_ng = df_ng.iloc[7:].dropna(subset=['Mã môn học'])
     HP = df_ng[["Mã học phần", "Tên môn học", "Số tín chỉ"]].dropna()
@@ -607,7 +607,7 @@ def fun_update_Score():
         hp = {"mhp": m, "tenhp": t, "soTC": s}
         ds_hp.append(hp)
 
-    df2 = pd.read_excel("media/ketqua_HK3_K16DS.xlsx")
+    df2 = pd.read_excel(file_diem)
     df2.columns = df2.iloc[7].tolist()
     df2 = df2.iloc[8:].dropna(subset=['Họ đệm']).reset_index(drop=True)
     a = pd.DataFrame(ds_hp)
@@ -638,11 +638,9 @@ class UpdateScore(View):
         return render(request, 'app/UpdateScore.html',locals())
     
     def post(self, request):
-        try :
-            fun_update_Score()
-            messages.success(request, 'Cập nhật thành công')
-        except:
-            messages.error(request, 'Cập nhật thất bại')
+        name_file_niengiam= request.POST['name_file_niengiam']
+        name_file_diem= request.POST['name_file_diem']
+        fun_update_Score(name_file_niengiam,name_file_diem)
         return redirect(request.META.get('HTTP_REFERER'))
 
 def fun_update_Student(name_file,name_lop):

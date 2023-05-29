@@ -11,6 +11,17 @@ Update student scores
 
 {% block link-css %}
 <style>
+    #loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            position: absolute;
+            width: 100%;
+            z-index: 9999;
+            background-color: rgba(255, 255, 255, 0.7);
+    }
+
     table {
         border-collapse: collapse;
         width: 100%;
@@ -52,18 +63,46 @@ Update student scores
     .file-upload .file-select.file-select-disabled:hover{cursor:default;display:block;border: 2px solid #dce4ec;color: #34495e;cursor:pointer;height:40px;line-height:40px;margin-top:5px;text-align:left;background:#FFFFFF;overflow:hidden;position:relative;}
     .file-upload .file-select.file-select-disabled:hover .file-select-button{background:#dce4ec;color:#666666;padding:0 10px;display:inline-block;height:40px;line-height:40px;}
     .file-upload .file-select.file-select-disabled:hover .file-select-name{line-height:40px;display:inline-block;padding:0 10px;}
+
+    .file-upload-diem{display:block;text-align:center;font-family: Helvetica, Arial, sans-serif;font-size: 12px;}
+    .file-upload-diem .file-select-diem{display:block;border: 2px solid #dce4ec;color: #34495e;cursor:pointer;height:40px;line-height:40px;text-align:left;background:#FFFFFF;overflow:hidden;position:relative;}
+    .file-upload-diem .file-select-diem .file-select-diem-button{background:#dce4ec;padding:0 10px;display:inline-block;height:40px;line-height:40px;}
+    .file-upload-diem .file-select-diem .file-select-diem-name{line-height:40px;display:inline-block;padding:0 10px;}
+    .file-upload-diem .file-select-diem:hover{border-color:#34495e;transition:all .2s ease-in-out;-moz-transition:all .2s ease-in-out;-webkit-transition:all .2s ease-in-out;-o-transition:all .2s ease-in-out;}
+    .file-upload-diem .file-select-diem:hover .file-select-diem-button{background:#34495e;color:#FFFFFF;transition:all .2s ease-in-out;-moz-transition:all .2s ease-in-out;-webkit-transition:all .2s ease-in-out;-o-transition:all .2s ease-in-out;}
+    .file-upload-diem.active .file-select-diem{border-color:#3fa46a;transition:all .2s ease-in-out;-moz-transition:all .2s ease-in-out;-webkit-transition:all .2s ease-in-out;-o-transition:all .2s ease-in-out;}
+    .file-upload-diem.active .file-select-diem .file-select-diem-button{background:#3fa46a;color:#FFFFFF;transition:all .2s ease-in-out;-moz-transition:all .2s ease-in-out;-webkit-transition:all .2s ease-in-out;-o-transition:all .2s ease-in-out;}
+    .file-upload-diem .file-select-diem input[type=file]{z-index:100;cursor:pointer;position:absolute;height:100%;width:100%;top:0;left:0;opacity:0;filter:alpha(opacity=0);}
+    .file-upload-diem .file-select-diem.file-select-diem-disabled{opacity:0.65;}
+    .file-upload-diem .file-select-diem.file-select-diem-disabled:hover{cursor:default;display:block;border: 2px solid #dce4ec;color: #34495e;cursor:pointer;height:40px;line-height:40px;margin-top:5px;text-align:left;background:#FFFFFF;overflow:hidden;position:relative;}
+    .file-upload-diem .file-select-diem.file-select-diem-disabled:hover .file-select-diem-button{background:#dce4ec;color:#666666;padding:0 10px;display:inline-block;height:40px;line-height:40px;}
+    .file-upload-diem .file-select-diem.file-select-diem-disabled:hover .file-select-diem-name{line-height:40px;display:inline-block;padding:0 10px;}
 </style>
 {% endblock link-css %}
 
 {% block main-content %}
+<div id="loading" class="d-none">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
 <div class="container vh-100" style="background-color: #FFFFFF; border-radius: 15px;">
     <div class="text-center pt-3">
         <h1 >Chọn file excel cập nhật danh sách điểm</h1>
-        <div class="file-upload d-flex" style="justify-content: center;">
-            <div class="file-select" style=" border-radius: 15px;">
-                <div class="file-select-button" id="fileName">Choose File</div>
-                <div class="file-select-name" id="noFile">No file chosen...</div> 
-                <input type="file" name="excelFile" id="excelFile">
+        <div class=" d-flex" style="justify-content: center;">
+            <div class="file-upload">
+                <div class="file-select" style=" border-radius: 15px;">
+                    <div class="file-select-button" id="fileName">Niêm giám</div>
+                    <div class="file-select-name" id="noFile">No file chosen...</div> 
+                    <input type="file" name="excelFile" id="excelFile">
+                </div>
+            </div>
+            <div class="file-upload-diem ml-3">
+                <div class="file-select-diem" style=" border-radius: 15px;">
+                    <div class="file-select-diem-button" id="fileNamediem">Kết quả học tập</div>
+                    <div class="file-select-diem-name" id="noFilediem">No file chosen...</div> 
+                    <input type="file" name="excelFilediem" id="excelFilediem">
+                </div>
             </div>
         </div>
         <br>
@@ -71,8 +110,9 @@ Update student scores
             <div class="col-md-3"></div>
             <div class="col-md-6">
                 <div class="d-flex" style="justify-content: space-evenly;">
-                    <input type="button" value="Xem" onclick="uploadExcel()" class="btn btn-primary mb-3">
-                    <input type="button" value="Cập nhật điểm" onclick="uploadExcel()" class="btn btn-primary mb-3">
+                    <input type="button" value="Xem niên giám" onclick="uploadExcel()" class="btn btn-primary mb-3">
+                    <input type="button" value="Xem kết quả học tập" onclick="uploadExcelDiem()" class="btn btn-primary mb-3">
+                    <input type="button" value="Cập nhật điểm" class="btn btn-primary mb-3" id="UpdateDiem">
                 </div>
             </div>
             <div class="col-md-3"></div>
@@ -134,5 +174,112 @@ Update student scores
         };
         reader.readAsBinaryString(file);
     }
+    $('#excelFilediem').bind('change', function () {
+        var fileNamediem = $("#excelFilediem").val();
+        if (/^\s*$/.test(fileNamediem)) {
+            $(".file-upload-diem").removeClass('active');
+            $("#noFilediem").text("No file chosen..."); 
+        }
+        else {
+            $(".file-upload-diem").addClass('active');
+            $("#noFilediem").text(fileNamediem.replace("C:\\fakepath\\", "")); 
+        }
+    });
+    function uploadExcelDiem() {
+        let file = document.getElementById('excelFilediem').files[0];
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            let data = e.target.result;
+            let workbook = XLSX.read(data, {type: 'binary'});
+            let sheetName = workbook.SheetNames[0];
+            let worksheet = workbook.Sheets[sheetName];
+            let excelData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+
+            let tableHtml = '<tr>';
+            for (let i = 0; i < excelData[0].length; i++) {
+                if (excelData[0][i] == null) {
+                    excelData[0][i] = '';
+                }
+                tableHtml += '<th>' + excelData[0][i] + '</th>';
+            }
+            tableHtml += '</tr>';
+
+            for (let i = 1; i < excelData.length; i++) {
+                tableHtml += '<tr>';
+                for (let j = 0; j < excelData[i].length; j++) {
+                    if (excelData[i][j] == null) {
+                        excelData[i][j] = '';
+                    }
+                    tableHtml += '<td>' + excelData[i][j] + '</td>';
+                }
+                tableHtml += '</tr>';
+            }
+
+            document.getElementById('excelTable').innerHTML = tableHtml;
+        };
+        reader.readAsBinaryString(file);
+    }
+    
+    const selected_file_niengiam = document.getElementById("excelFile");
+    const selected_file_diem = document.getElementById("excelFilediem");
+    var name_file_niengiam="";
+    var name_file_diem="";
+    selected_file_niengiam.addEventListener("change", function(){
+        const selectValue = selected_file_niengiam.value.trim().replace("C:\\fakepath\\", "media/");
+        name_file_niengiam=selectValue;
+        console.log(name_file_niengiam);
+    })
+
+    selected_file_diem.addEventListener("change", function(){
+        const selectValue = selected_file_diem.value.trim().replace("C:\\fakepath\\", "media/");
+        name_file_diem=selectValue;
+        console.log(name_file_diem);
+    })
+
+    function checkRongFile()
+    {
+        if (name_file_niengiam=="" || name_file_diem=="")
+        {
+            alert("Vui lòng chọn file niên giám và file điểm");
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    $("#UpdateDiem").click(
+        function()
+        {
+            if (checkRongFile())
+            {
+                const loading = document.getElementById("loading");
+                loading.classList.remove("d-none");
+                $.ajax(
+                    {
+                        url: "/update-list-score/",
+                        type: "POST",
+                        data:{
+                            'name_file_niengiam': name_file_niengiam,
+                            'name_file_diem': name_file_diem,
+                            'csrfmiddlewaretoken': '{{csrf_token}}'
+                        },
+                        success: function(data){
+                            alert("Thêm thông tin thành công");
+                            location.reload();
+                        },
+                        error: function(){
+                            alert("Thêm thông tin thất bại");
+                        },
+                        complete: function(){
+                            loading.classList.add("d-none");
+                        }
+                    }
+                )
+            }
+        }
+    )
+
+
 </script>
 {% endblock script-js %}

@@ -52,16 +52,32 @@ Cập nhật danh sách sinh viên
     .file-upload .file-select.file-select-disabled:hover{cursor:default;display:block;border: 2px solid #dce4ec;color: #34495e;cursor:pointer;height:40px;line-height:40px;margin-top:5px;text-align:left;background:#FFFFFF;overflow:hidden;position:relative;}
     .file-upload .file-select.file-select-disabled:hover .file-select-button{background:#dce4ec;color:#666666;padding:0 10px;display:inline-block;height:40px;line-height:40px;}
     .file-upload .file-select.file-select-disabled:hover .file-select-name{line-height:40px;display:inline-block;padding:0 10px;}
+
+    #loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        position: absolute;
+        width: 100%;
+        z-index: 9999;
+        background-color: rgba(255, 255, 255, 0.7);
+    }   
 </style>
 {% endblock link-css %}
 
 {% block main-content %}
+<div id="loading" class="d-none">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
 <div class="container vh-100" style="background-color: #FFFFFF; border-radius: 15px;">
     <div class="text-center pt-3">
         <h1 >Chọn file excel cập nhật danh sách sinh viên</h1>
         <div class="file-upload d-flex" style="justify-content: center;align-items: baseline">
             <div class="file-select" style=" border-radius: 15px;">
-                <div class="file-select-button" id="fileName">Choose File</div>
+                <div class="file-select-button" id="fileName">Danh sách sinh viên</div>
                 <div class="file-select-name" id="noFile">No file chosen...</div> 
                 <input type="file" name="excelFile" id="excelFile">
             </div>
@@ -84,7 +100,7 @@ Cập nhật danh sách sinh viên
             <div class="col-md-3"></div>
             <div class="col-md-6">
                 <div class="d-flex" style="justify-content: space-evenly;">
-                    <input type="button" value="Xem" onclick="uploadExcel()" class="btn btn-primary mb-3">
+                    <input type="button" value="Xem chi tiết" onclick="uploadExcel()" class="btn btn-primary mb-3">
                     <input type="button" value="Cập nhật danh sách" class="btn btn-primary mb-3" id="UpdateSV">
                 </div>
             </div>
@@ -630,6 +646,8 @@ Cập nhật danh sách sinh viên
         {
             if (checkRongFile())
             {
+                const loading = document.getElementById("loading");
+                loading.classList.remove("d-none");
                 $.ajax(
                     {
                         url: "/update-student-list/",
@@ -645,6 +663,9 @@ Cập nhật danh sách sinh viên
                         },
                         error: function(){
                             alert("Thêm thông tin thất bại");
+                        },
+                        complete: function(){
+                            loading.classList.add("d-none");
                         }
                     }
                 )
