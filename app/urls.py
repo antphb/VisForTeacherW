@@ -53,14 +53,17 @@ urlpatterns = [
     path("edit-note-student/<mssv>/<id>",views.editNoteStudent.as_view(),name="edit-note-student"),
 
     path("edit-info-teacher/",views.editInfoTeacher.as_view(),name="edit-info-teacher"),
+    path("add-info-teacher/",views.AddInfoTeacher.as_view(),name="add-info-teacher"),
     path("edit-info-student/",views.editInfoStudent.as_view(),name="edit-info-student"),
     path("delete-info-student/<mssv>",views.deleteInfoStudent.as_view(),name="delete-info-student"),
+    path("add-class/",views.addClass.as_view(),name="add-class"),
 
     path("detail-teacher/",views.detailin4Teacher.as_view(),name="detail-teacher"),
 
     path("update-list-score/",views.UpdateScore.as_view(),name="update-list-score"),
     path("update-student-list/", views.UpdateStudentList.as_view(), name="update-student-list"),
 
+    path("aboutUs/",views.aboutus.as_view(),name="aboutUs"),
     # Login 
     path('login/',auth_views.LoginView.as_view(template_name='login/login.html', authentication_form=LoginForm),name='login'),
     

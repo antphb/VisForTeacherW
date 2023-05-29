@@ -92,14 +92,14 @@ WSGI_APPLICATION = 'TeachForTeacher.wsgi.application'
 # }
 DATABASES_URL="postgresql://postgres:MWaO3Kbuh9KnNRRYHU1Y@containers-us-west-173.railway.app:6581/railway"
 DATABASES={
-    # 'default':{
-    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #     'NAME': 'db_VisFTeacher',
-    #     'USER': 'postgres',
-    #     'PASSWORD': '20112001',
-    #     'HOST': 'localhost',
-    #     'PORT': '5432',
-    # }
+    'default':{
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'db_VisFTeacher',
+        'USER': 'postgres',
+        'PASSWORD': '20112001',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
     # 'default':{
     #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
     #     'NAME': 'railway',
@@ -109,7 +109,7 @@ DATABASES={
     #     'PORT': '6581',
     # }
     # conn_max_age: thời gian kết nối tối đa
-    'default': dj_database_url.parse(env('DATABASES_URL')),
+    # 'default': dj_database_url.parse(env('DATABASES_URL')),
 
 }
 

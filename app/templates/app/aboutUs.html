@@ -1,0 +1,118 @@
+{% extends 'app/base.html' %}
+{% load static%}
+
+{% block name-title %}
+About us
+{% endblock name-title %}
+
+{% block page-title %}
+About us
+{% endblock page-title %}
+
+{% block link-css %}
+<style>
+    .social-link {
+        width: 30px;
+        height: 30px;
+        border: 1px solid #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
+        border-radius: 50%;
+        transition: all 0.3s;
+        font-size: 0.9rem;
+    }
+    .social-link:hover,
+    .social-link:focus {
+        background: #ddd;
+        text-decoration: none;
+        color: #555;
+    }
+</style>
+{% endblock link-css %}
+
+{% block main-content %}
+<div class="container h-100" style="background-color: #FFFFFF; border-radius: 15px;">
+    <div class="bg-light">
+    <div class="container py-5">
+        <div class="row h-100 align-items-center py-5">
+        <div class="col-lg-6">
+            <h1 class="display-4">Giới thiệu</h1>
+            <p class="lead text-muted mb-0">Welcome!
+                Chào mừng bạn đến với ứng dụng web của chúng tôi - một công cụ hữu ích dành cho giáo viên chủ nhiệm để theo dõi, quản lý và xem thống kê kết quả học tập của sinh viên.</p>
+            {% comment %} <p class="lead text-muted">Snippet by <a href="https://bootstrapious.com/snippets" class="text-muted"> 
+                        <u>Bootstrapious</u></a>
+            </p> {% endcomment %}
+        </div>
+        <div class="col-lg-6 d-none d-lg-block"><img src="https://bootstrapious.com/i/snippets/sn-about/illus.png" alt="" class="img-fluid"></div>
+        </div>
+    </div>
+    </div>
+    
+    <div class="bg-white py-5">
+    <div class="container py-5">
+        <div class="row align-items-center mb-5">
+        <div class="col-lg-6 order-2 order-lg-1"><i class="fa fa-bar-chart fa-2x mb-3 text-primary"></i>
+            <h2 class="font-weight-light">Sự Tiện lợi và Trực quan</h2>
+            <p class="font-italic text-muted mb-4">Giao diện thân thiện với người dùng, thiết kế linh hoạt và dễ sử dụng.</p><a href="#" class="btn btn-light px-5 rounded-pill shadow-sm">Learn More</a>
+        </div>
+        <div class="col-lg-5 px-5 mx-auto order-1 order-lg-2"><img src="https://bootstrapious.com/i/snippets/sn-about/img-1.jpg" alt="" class="img-fluid mb-4 mb-lg-0"></div>
+        </div>
+        <div class="row align-items-center">
+        <div class="col-lg-5 px-5 mx-auto"><img src="https://bootstrapious.com/i/snippets/sn-about/img-2.jpg" alt="" class="img-fluid mb-4 mb-lg-0"></div>
+        <div class="col-lg-6"><i class="fa fa-leaf fa-2x mb-3 text-primary"></i>
+            <h2 class="font-weight-light">Sự Tiện lợi và Trực quan</h2>
+            <p class="font-italic text-muted mb-4">Trực hóa bằng nhiều biểu đồ, thống kê kết quả học tập đưa cái nhìn tổng quan về hiệu suất học tập của cá nhân và cả lớp học.</p><a href="#" class="btn btn-light px-5 rounded-pill shadow-sm">Learn More</a>
+        </div>
+        </div>
+    </div>
+    </div>
+    
+    <div class="bg-light py-5">
+    <div class="container py-5">
+        <div class="row mb-4">
+        <div class="col-lg-5">
+            <h2 class="display-4 font-weight-light">Đội ngũ của chúng tôi</h2>
+            {% comment %} <p class="font-italic text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p> {% endcomment %}
+        </div>
+        </div>
+    
+        <div class="row text-center">
+        <!-- Team item-->
+        <div class="col-xl-6 col-sm-6 mb-5">
+            <div class="bg-white rounded shadow-sm py-5 px-4"><img src="https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-9/86180980_1318508645013363_2567714453810315264_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=174925&_nc_ohc=JR01zRtHbGoAX9Y-WRY&_nc_ht=scontent.fsgn5-3.fna&oh=00_AfAhgZnDCTOqF9nF57fZ2xhgWndkE0YNFBNVlwS1FMsdzg&oe=649A3BE0" alt="" width="100" class="img-fluid rounded-circle mb-3 img-thumbnail shadow-sm">
+            <h5 class="mb-0">Nguyễn Đình Thanh</h5><span class="small text-uppercase text-muted">20003005</span>
+            <ul class="social mb-0 list-inline mt-3">
+                <li class="list-inline-item"><a href="https://www.facebook.com/NDThanh2011" class="social-link"><i class="fa-brands fa-facebook"></i></a></li>
+                <li class="list-inline-item"><a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a></li>
+                <li class="list-inline-item"><a href="#" class="social-link"><i class="fa-brands fa-youtube"></i></a></li>
+                <li class="list-inline-item"><a href="https://www.kaggle.com/antphb" class="social-link"><i class="fa-brands fa-kaggle"></i></a></li>
+            </ul>
+            </div>
+        </div>
+        <!-- End-->
+        <!-- Team item-->
+        <div class="col-xl-6 col-sm-6 mb-5">
+            <div class="bg-white rounded shadow-sm py-5 px-4"><img src="https://scontent.fsgn5-10.fna.fbcdn.net/v/t39.30808-1/340446278_6081192598656723_5030270659460101307_n.jpg?stp=dst-jpg_p200x200&_nc_cat=107&ccb=1-7&_nc_sid=7206a8&_nc_ohc=WoezR-55LJMAX9LqXZl&_nc_ht=scontent.fsgn5-10.fna&oh=00_AfBL_MNWfoodB20gkwlCx5TnSvUwR7SwqfDLbgNLNvGygw&oe=6477E485" alt="" width="100" class="img-fluid rounded-circle mb-3 img-thumbnail shadow-sm">
+            <h5 class="mb-0">Lưu Lương Vi Nhân</h5><span class="small text-uppercase text-muted">20104821</span>
+            <ul class="social mb-0 list-inline mt-3">
+                <li class="list-inline-item"><a href="https://www.facebook.com/nhan.vi.798" class="social-link"><i class="fa-brands fa-facebook"></i></a></li>
+                <li class="list-inline-item"><a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a></li>
+                <li class="list-inline-item"><a href="#" class="social-link"><i class="fa-brands fa-youtube"></i></a></li>
+                <li class="list-inline-item"><a href="#" class="social-link"><i class="fa-brands fa-kaggle"></i></a></li>
+            </ul>
+            </div>
+        </div>
+        <!-- End-->
+    
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock main-content %}
+
+
+{% block script-js %}
+
+{% endblock script-js %}

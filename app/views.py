@@ -1,3 +1,4 @@
+import datetime
 from django.http import JsonResponse
 from django.db.models import Avg, Q, Exists, OuterRef, Subquery, Sum
 
@@ -7,12 +8,15 @@ from django.contrib.auth.decorators import login_required
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.models import User
+from django.contrib import messages
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.mail import send_mail
 from django.views.decorators.csrf import csrf_exempt,csrf_protect 
 from .models import *
 import pandas as pd
+import numpy as np
 # {{request.user.is_superuser}}
 # Create your views here.
 sotinChi= {
@@ -196,7 +200,7 @@ class tableStudent(View):
     
 class APIChartBarScoreView(APIView):
     def get(self, request,val):
-        if val=="ALL":
+        if val=="ALL".lower():
             if request.user.is_superuser:
                 students=Sinhvien.objects.all().order_by('ten')
             else:
@@ -287,7 +291,7 @@ class APIChartBarRankALLView(APIView):
 
 class APIChartPieRankView(APIView):
     def get(self, request,val):
-        if val=="ALL":
+        if val=="ALL".lower():
             if request.user.is_superuser:
                 students=Sinhvien.objects.all().order_by('ten')
             else:
@@ -376,7 +380,7 @@ class APIChartBarScoreStudentXView(APIView):
         mahpHoc={}
         for i in diemhocphan:
             namehp=i.mahp.tenhp.strip()
-            if namehp =="Tiếng anh 1" or namehp == "Tiê ng Anh 2" or namehp=="Chứng chỉ TOEIC 450":
+            if namehp =="Tiếng Anh 1" or namehp == "Tiếng Anh 2" or namehp=="Chứng chỉ TOEIC 450":
                 continue
             score_hocphan[namehp]=round(i.diemhp,2)
             mahpHoc[i.mahp.mahp]=namehp
@@ -428,7 +432,7 @@ class APISummaryRankSubjectStudentX(APIView):
         rank_thang4={}
         for i in diemhocphan:
             namehp=i.mahp.tenhp.strip()
-            if namehp =="Tiếng anh 1" or namehp == "Tiê ng Anh 2":
+            if namehp =="Tiếng Anh 1" or namehp == "Tiếng Anh 2":
                 continue
             rankdiem=i.diemhp
             if rankdiem>=9 and rankdiem<=10:
@@ -541,19 +545,177 @@ class editInfoTeacher(View):
         request.user.save()
         return redirect(request.META.get('HTTP_REFERER'))
 
+class AddInfoTeacher(View):
+    def post(self,request):
+        msgv= request.POST['mgv']
+        tengv= request.POST['tengv']
+        gioitinh= request.POST['gioitinh']
+        ngaysinh= request.POST['ngaysinh']
+        sdt= request.POST['sdt']
+        email= request.POST['email']
+        sonhatenduong= request.POST['sonhatenduong']
+        tinhthanh= request.POST['tinhthanh']
+        quanhuyen= request.POST['quanhuyen']
+        phuongxa= request.POST['phuongxa']
+        chucdanh= request.POST['hocvi']
+        phanhang= request.POST['phanhang']
+        chuyennganh= request.POST['chuyennganh']
+        chucvi= request.POST['chucvi']
+        diachi= sonhatenduong + "-" + phuongxa + "-" + quanhuyen + "-" + tinhthanh
+        giaovien= Giaovien(magv=msgv, tengv=tengv, gioitinh=gioitinh, ngaysinh=ngaysinh, sdt=sdt, email=email, diachi=diachi, chucdanh=chucdanh, phanhang=phanhang, nganh=chuyennganh, chucvu=chucvi)
+        giaovien.save()
+        user= User.objects.create_user(username=msgv, password="11111111", email=email)
+        user.save()
+        return redirect(request.META.get('HTTP_REFERER'))
+
+class addClass(View):
+    def post(self,request):
+        malop= request.POST['malop']
+        tenlop= request.POST['tenlop']
+        gv= request.POST['gv']
+        magv=gv.split("-")[0]
+        lophoc= Lophoc(malh=malop, tenlh=tenlop, magv=Giaovien.objects.get(magv=magv))
+        lophoc.save()
+        return redirect(request.META.get('HTTP_REFERER'))
+
+def conv(string):
+    if string[-1:] == "*":
+        return string[:len(string)-1].strip()
+    else:
+        return string.strip()
+
+def sp(string):
+    return string.split('(')[0]   
+
+
+def fun_update_Score():
+    df_ng = pd.read_excel("media/curriculum_KHDL_K16.xlsx")
+    df_ng.columns = df_ng.iloc[6].tolist()
+    df_ng = df_ng.iloc[7:].dropna(subset=['Mã môn học'])
+    HP = df_ng[["Mã học phần", "Tên môn học", "Số tín chỉ"]].dropna()
+    HP["Tên môn học"] = HP["Tên môn học"].apply(conv)
+    HP["Số tín chỉ"] = HP["Số tín chỉ"].apply(sp)
+    HP = HP.astype({"Mã học phần": np.int64})
+
+    mhp = [str(HP["Mã học phần"].values[i]) for i in range(len(HP))]
+    tenhp = [str(HP["Tên môn học"].values[i]) for i in range(len(HP))]
+    sotc = [str(HP["Số tín chỉ"].values[i]) for i in range(len(HP))]
+
+    ds_hp = []
+
+    for m, t, s in zip(mhp, tenhp, sotc):
+        hp = {"mhp": m, "tenhp": t, "soTC": s}
+        ds_hp.append(hp)
+
+    df2 = pd.read_excel("media/ketqua_HK3_K16DS.xlsx")
+    df2.columns = df2.iloc[7].tolist()
+    df2 = df2.iloc[8:].dropna(subset=['Họ đệm']).reset_index(drop=True)
+    a = pd.DataFrame(ds_hp)
+    df2.columns = [str(i).strip() for i in df2.columns]
+    len_sub = len(ds_hp)
+
+    mssv = [str(df2["Mã sinh viên"].values[i]) for i in range(len(df2)) for j in range(len_sub) if str(df2.iloc[:, j+4][i]) != 'nan']
+    mhp = [a["mhp"][a["tenhp"]==df2.columns[j+4]].values[0] for i in range(len(df2)) for j in range(len_sub) if str(df2.iloc[:, j+4][i]) != 'nan']
+    dtp = [str(df2.iloc[:, j+4][i]) for i in range(len(df2)) for j in range(len_sub) if str(df2.iloc[:, j+4][i]) != 'nan']
+
+    ds_dsv = []
+
+    for m, t, s in zip(mssv, mhp, dtp):
+        hp = {"mssv": m, "mhp": t, "dtp": s}
+        ds_dsv.append(hp)
+    # chitietdiem= Chitietdiem.objects.all()
+    for i in range(len(ds_dsv)):
+        if Chitietdiem.objects.filter(masv=ds_dsv[i]["mssv"], mahp=ds_dsv[i]["mhp"]).exists():
+            chitietdiem= Chitietdiem.objects.get(masv=ds_dsv[i]["mssv"], mahp=ds_dsv[i]["mhp"])
+            chitietdiem.dtp= ds_dsv[i]["dtp"]
+            # chitietdiem.save()
+        else:
+            chitietdiem= Chitietdiem(masv= Sinhvien.objects.get(masv=ds_dsv[i]["mssv"]), mahp= Hocphan.objects.get(mahp=ds_dsv[i]["mhp"]), diemhp= ds_dsv[i]["dtp"])
+                # chitietdiem.save()
+
 class UpdateScore(View):
     def get(self,request):
         return render(request, 'app/UpdateScore.html',locals())
-    def post(self, request, path):
-        df2 = pd.read_excel("/content/drive/MyDrive/MyData/ketqua_HK3_K16DS.xlsx")
-        df2.columns = df2.iloc[7].tolist()
-        df2 = df2.iloc[8:].dropna(subset=['Họ đệm']).reset_index(drop=True)
-        print(df2.head())
+    
+    def post(self, request):
+        try :
+            fun_update_Score()
+            messages.success(request, 'Cập nhật thành công')
+        except:
+            messages.error(request, 'Cập nhật thất bại')
         return redirect(request.META.get('HTTP_REFERER'))
+
+def fun_update_Student(name_file,name_lop):
+    df3 = pd.read_excel(name_file)
+    df3.columns = df3.iloc[7].tolist()
+    df3.drop(df3.columns[12], axis=1, inplace=True)
+    df3 = df3.iloc[8:, :13].dropna(subset=['Họ đệm']).reset_index(drop=True)
+    msv = [value if pd.notnull(value) else '' for value in df3['Mã SV'].tolist()]
+    ho = [value if pd.notnull(value) else '' for value in df3['Họ đệm'].tolist()]
+    ten = [value if pd.notnull(value) else '' for value in df3['Tên'].tolist()]
+    sex = [value if pd.notnull(value) else '' for value in df3['Giới tính'].tolist()]
+    date = [value if pd.notnull(value) else '' for value in df3['Ngày sinh'].tolist()]
+    race = [value if pd.notnull(value) else '' for value in df3['Dân tộc'].tolist()]
+    tg = [value if pd.notnull(value) else '' for value in df3['Tôn giáo'].tolist()]
+    hk = [value if pd.notnull(value) else '' for value in df3['Hộ khẩu thường trú'].tolist()]
+    wborn = [value if pd.notnull(value) else '' for value in df3['Nơi Sinh'].tolist()]
+    ema = [value if pd.notnull(value) else '' for value in df3['Email'].tolist()]
+    sdt = [value if pd.notnull(value) else '' for value in df3['Số ĐT'].tolist()]
+    gc = [value if pd.notnull(value) else '' for value in df3['Ghi chú'].tolist()]
+
+    today= datetime.date.today()
+    malophoc=Lophoc.objects.get(malh=name_lop)
+    sinhvienTT= Sinhvien.objects.filter(malop= malophoc)
+    giaovien = malophoc.magv
+    if len(sinhvienTT) == 0:
+        for m, h, t, s, d, r, tg, hk, w, e, sdt_1, gc in zip(msv, ho, ten, sex, date, race, tg, hk, wborn, ema, sdt, gc):
+            gioitinh= 1 if s == 'Nam' else 0
+            # “03/10/2002” value has an invalid date format. It must be in YYYY-MM-DD format
+            ns= datetime.datetime.strptime(d, '%d/%m/%Y').strftime('%Y-%m-%d')
+            sinhvien = Sinhvien(masv= m, malop=malophoc, hodem=h,ten=t,gioitinh=gioitinh,ngaysinh=ns,dantoc=r,noisinh=hk,email=e,sodt=sdt_1)
+            sinhvien.save()
+            if gc != '':
+                sinhvienghichu= Sinhvien.objects.get(masv=m)
+                ghichusv= Ghichu.objects.create(masv= sinhvienghichu, magv= giaovien, noidung=gc, ngay=today)
+    else:
+        for m, h, t, s, d, r, tg, hk, w, e, sdt_1, gc in zip(msv, ho, ten, sex, date, race, tg, hk, wborn, ema, sdt, gc):
+            gioitinh= 1 if s == 'Nam' else 0
+            ns= datetime.datetime.strptime(d, '%d/%m/%Y').strftime('%Y-%m-%d')
+            sinhvien= Sinhvien.objects.get(Q(masv=m) & Q(malop=malophoc))
+            sinhvien.hodem=h
+            sinhvien.ten=t
+            sinhvien.gioitinh=gioitinh
+            sinhvien.ngaysinh=ns
+            sinhvien.dantoc=r
+            sinhvien.noisinh=hk
+            sinhvien.email=e
+            sinhvien.sodt=sdt_1
+            sinhvien.save()
+            if gc != '':
+                ghichutontai= Ghichu.objects.filter(masv=sinhvien)
+                for gcTT in ghichutontai:
+                    if gcTT.noidung != gc:
+                        ghichusv= Ghichu(masv=sinhvien ,magv= giaovien, noidung=gc, ngay=today)
+                        ghichusv.save()
+        dssvTT=sinhvienTT.values_list('masv', flat=True)
+        for mssvTT in dssvTT:
+            if mssvTT not in msv:
+                sinhvien= Sinhvien.objects.get(Q(masv=mssvTT) & Q(malop=malophoc))
+                sinhvien.delete()
+    
 
 class UpdateStudentList(View):
     def get(self,request):
+        giaovien= Giaovien.objects.exclude(chucvu = 'Admin')
+        lophoc= Lophoc.objects.all()
+        # sắp xếp theo tên lớp
+        lophoc= sorted(lophoc, key=lambda x: x.tenlh)
         return render(request, 'app/UpdateStudent.html',locals())
+    def post(self, request):
+        name_file= request.POST['name_file']
+        name_lophoc= request.POST['name_lophoc']
+        fun_update_Student(name_file, name_lophoc)
+        return redirect(request.META.get('HTTP_REFERER'))
 
 class editInfoStudent(View):
     def post(self,request):
@@ -595,6 +757,10 @@ class deleteInfoStudent(View):
         sinhvien.delete()
         return redirect(request.META.get('HTTP_REFERER'))
 
+class aboutus(View):
+    def get(self,request):
+        return render(request, 'app/aboutUs.html',locals())
+    
 def logout_user(request):
     logout(request)
     return redirect('login')

@@ -59,11 +59,24 @@ Cập nhật danh sách sinh viên
 <div class="container vh-100" style="background-color: #FFFFFF; border-radius: 15px;">
     <div class="text-center pt-3">
         <h1 >Chọn file excel cập nhật danh sách sinh viên</h1>
-        <div class="file-upload d-flex" style="justify-content: center;">
+        <div class="file-upload d-flex" style="justify-content: center;align-items: baseline">
             <div class="file-select" style=" border-radius: 15px;">
                 <div class="file-select-button" id="fileName">Choose File</div>
                 <div class="file-select-name" id="noFile">No file chosen...</div> 
                 <input type="file" name="excelFile" id="excelFile">
+            </div>
+            <div class="ml-3">
+                <select name="dslophoc" id="dslophoc" class="form-control">
+                    <option value="" selected>Chọn lớp</option>
+                {% for lop in lophoc %}
+                    <option value="{{lop.malh}}">{{lop.tenlh}}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div class="ml-2">
+                <a class="btn text-success p-0" href="javascript:void(0)" data-toggle="modal" data-target="#ModalADD">
+                    <i class="fa-solid fa-plus"></i>
+                </a>
             </div>
         </div>
         <br>
@@ -72,7 +85,7 @@ Cập nhật danh sách sinh viên
             <div class="col-md-6">
                 <div class="d-flex" style="justify-content: space-evenly;">
                     <input type="button" value="Xem" onclick="uploadExcel()" class="btn btn-primary mb-3">
-                    <input type="button" value="Cập nhật điểm" onclick="uploadExcel()" class="btn btn-primary mb-3">
+                    <input type="button" value="Cập nhật điểm" class="btn btn-primary mb-3" id="UpdateSV">
                 </div>
             </div>
             <div class="col-md-3"></div>
@@ -82,10 +95,239 @@ Cập nhật danh sách sinh viên
         <table id="excelTable"></table>
     </div>
 </div>
+
+<div class="modal fade" id="ModalADD" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Thêm mới lớp học</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+            <form method="post" id="addNoteForm">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Mã lớp học: </label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="addMLH" class="form-control" id="mlh">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Tên lớp học: </label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="addTL" class="form-control" id="tenlop">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Giáo viên: </label>
+                    </div>
+                    <div class="col-md-7">
+                        <select name="select_gv" id="select_gv" class="form-control">
+                            {% for gv in giaovien %}
+                                <option value="{{gv.magv}}">{{gv.magv}}-{{gv.tengv}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-1 d-flex" style="align-items: center;">
+                        <a class="btn text-success p-0" href="javascript:void(0)" data-toggle="modal" data-target="#ModalADDGV">
+                            <i class="fa-solid fa-plus"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mt-3">
+                        <input type="" name="" id="ADDClass"  class="btn btn-primary w-100" value="Lưu">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+        <!-- <button type="button" class="btn btn-primary">Lưu</button> -->
+        </div>
+    </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalADDGV" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Thêm mới giáo viên</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+            <form method="post" id="addNoteForm">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Mã giáo viên: </label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="addMGV" class="form-control" id="mgv">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Tên giáo viên: </label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="addTgv" class="form-control" id="tengv">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Giới tính:</label>
+                    </div>
+                    <div class="col-md-8">
+                        <select name="gioitinh" id="gioitinh" class="form-control">
+                            <option value="1">Nam</option>
+                            <option value="0">Nữ</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Ngày sinh</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="date" name="addngaysinh" class="form-control" id="ngaysinh">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Số điện thoại: </label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="addsdtgv" class="form-control" id="sdt">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Email:</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" name="addemail" class="form-control" id="email">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Địa chỉ: </label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <select name="TinhThanh" id="TinhThanh" class="form-control">
+                                    <option value="" >-- Chọn tỉnh/thành phố --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12">
+                                <select name="QuanHuyen" id="QuanHuyen" class="form-control">
+                                    <option value="">-- Chọn quận/huyện --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12">
+                                <select name="PhuongXa" id="PhuongXa" class="form-control">
+                                    <option value="">-- Chọn phường/xã --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12">
+                                <input type="text" class="form-control" name="SoNhaTenDuong" id="SoNhaTenDuong" placeholder="Số nhà, tên đường">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-4">
+                        <label class="form-control" >Học vị:</label>
+                    </div>
+                    <div class="col-md-8">
+                        <select name="chucdanh" id="chucdanh" class="form-control">
+                            <option value="dh">Đại học</option>
+                            <option value="ths">Thạc sĩ</option>
+                            <option value="ts">Tiến sĩ</option>
+                            <option value="pgs">Phó giáo sư</option>
+                            <option value="gs">Giáo sư</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Phân hạng:</label>
+                    </div>
+                    <div class="col-md-8">
+                        <select name="phanhang" id="phanhang" class="form-control">
+                            <option value="cch1">Giảng viên cao cấp (hạng I)</option>
+                            <option value="ch2">Giảng viên chính (hạng II)</option>
+                            <option value="gvh3">Giảng viên (hạng III)</option>
+                            <option value="tg3">Trợ giảng (hạng III)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Chuyên ngành:</label>
+                    </div>
+                    <div class="col-md-8">
+                        <select name="chuyennganh" id="chuyennganh" class="form-control">
+                            <option value="KHMT">Khoa học máy tính</option>
+                            <option value="KHDL">Khoa học dữ liệu</option>
+                            <option value="KTPM">Kỹ thuật phần mềm</option>
+                            <option value="CNTT">Công nghệ thông tin</option>
+                            <option value="HTTT">Hệ thống thông tin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-control" >Chức vị:</label>
+                    </div>
+                    <div class="col-md-8">
+                        <select name="chucvi" id="chucvi" class="form-control">
+                            <option value="gv">Giảng viên</option>
+                            <option value="tbm">Trưởng bộ môn</option>
+                            <option value="pk">Phó khoa</option>
+                            <option value="tk">Trưởng Khoa</option>
+                            <option value="pgd">Phó giám đốc</option>
+                            <option value="gd">Giám đốc</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mt-3">
+                        <input type="" name="Lưu" id="ADDGV"  class="btn btn-primary w-100" value="Lưu">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+        <!-- <button type="button" class="btn btn-primary">Lưu</button> -->
+        </div>
+    </div>
+    </div>
+</div>
 {% endblock main-content %}
 
 
 {% block script-js %}
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js" ></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
 <script type="text/javascript" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 <script>
@@ -134,5 +376,280 @@ Cập nhật danh sách sinh viên
         };
         reader.readAsBinaryString(file);
     }
+
+    function getCodes(tinhthanh, quanhuyen, phuongxa) {
+        var maTinhThanh = "", maQuanHuyen = "", maPhuongXa = "";
+        
+        // gọi API và lấy danh sách tỉnh/thành phố
+        $.getJSON("https://provinces.open-api.vn/api/?depth=3", function(data) {
+            // tìm và lấy mã code của tỉnh/thành phố
+            $.each(data, function(index, value) {
+                if (value.name === tinhthanh) {
+                    // console.log(value.name);
+                    maTinhThanh = value.code;
+                    $("#TinhThanh").val(maTinhThanh).change();
+                    return false;
+                }
+            });
+
+            // nếu không tìm thấy tỉnh/tp thì trả về null
+            if (!maTinhThanh) {
+                console.log("Không tìm thấy mã code cho tỉnh/thành phố " + tinhthanh);
+                return null;
+            }
+
+            // gọi API và lấy danh sách quận/huyện theo mã code của tỉnh/thành phố đã tìm được
+            $.getJSON("https://provinces.open-api.vn/api/p/" + maTinhThanh + "?depth=2", function(data) {
+                // tìm và lấy mã code của quận/huyện
+                $.each(data.districts, function(index, value) {
+                    if (value.name === quanhuyen) {
+                        maQuanHuyen = value.code;
+                        $("#QuanHuyen").val(maQuanHuyen).change();
+                        return false;
+                    }
+                });
+
+                // nếu không tìm thấy quận/huyện thì trả về null
+                if (!maQuanHuyen) {
+                    console.log("Không tìm thấy mã code cho quận/huyện " + quanhuyen);
+                    return null;
+                }
+
+                // gọi API và lấy danh sách phường/xã theo mã code của quận/huyện đã tìm được
+                $.getJSON("https://provinces.open-api.vn/api/d/" + maQuanHuyen + "?depth=2", function(data) {
+                    // tìm và lấy mã code của phường/xã
+                    $.each(data.wards, function(index, value) {
+                        if (value.name === phuongxa) {
+                            maPhuongXa = value.code;
+                            $('#PhuongXa').val(maPhuongXa).change();
+                            return false;
+                        }
+                    });
+
+                    // nếu không tìm thấy phường/xã thì trả về null
+                    if (!maPhuongXa) {
+                        console.log("Không tìm thấy mã code cho phường/xã " + phuongxa);
+                        return null;
+                    }
+                });
+            });
+        });
+    }
+
+    
+    $(document).ready(function() {
+    // Gọi API và lấy danh sách tỉnh/thành phố
+        $.getJSON("https://provinces.open-api.vn/api/?depth=3", function(data) {
+            var html = "";
+            $.each(data, function(key, val) {
+            html += "<option value='" + val.code + "'>" + val.name + "</option>";
+            });
+            $('#TinhThanh').html(html);
+        });
+        
+        // Sự kiện khi chọn tỉnh thành phố
+        $('#TinhThanh').on('change', function() {
+            var codeTinhThanh = $(this).val();
+            // Gọi lại API và lấy danh sách quận/huyện tương ứng với tỉnh/thành phố đã chọn
+            $.getJSON("https://provinces.open-api.vn/api/p/" + codeTinhThanh + "?depth=2", function(data) {
+            var html = "";
+            $.each(data.districts, function(key, val) {
+                html += "<option value='" + val.code + "'>" + val.name + "</option>";
+            });
+            $('#QuanHuyen').html(html);
+            $('#PhuongXa').html("<option value=''>-- Chọn phường/xã --</option>");
+            });
+        });
+        
+        // Sự kiện khi chọn quận huyện
+        $('#QuanHuyen').on('change', function() {
+            var codeQuanHuyen = $(this).val();
+            // Gọi lại API và lấy danh sách phường/xã tương ứng với quận/huyện đã chọn
+            $.getJSON("https://provinces.open-api.vn/api/d/" + codeQuanHuyen + "?depth=2", function(data) {
+            var html = "";
+            $.each(data.wards, function(key, val) {
+                html += "<option value='" + val.code + "'>" + val.name + "</option>";
+            });
+            $('#PhuongXa').html(html);
+            });
+        });
+    });
+
+    function checkNoiDungAddGV()
+    {
+        var magv = $("#mgv").val();
+        var tengv= $("#tengv").val();
+        var gioitinh= $("#gioitinh").val();
+        var ngaysinh= $("#ngaysinh").val();
+        var sdt= $("#sdt").val();
+        var email= $("#email").val();
+
+        var sonhatenduong= $("#SoNhaTenDuong").val();
+        var tinhthanh= $("#TinhThanh option:selected").html();
+        var quanhuyen= $("#QuanHuyen option:selected").html();
+        var phuongxa= $("#PhuongXa option:selected").html();
+
+        var hocvi= $("#chucdanh option:selected").html();
+        var phanhang= $("#phanhang option:selected").html();
+        var chuyennganh= $("#chuyennganh option:selected").html();
+        var chucvi= $("#chucvi option:selected").html();
+        
+        if (magv==""||tengv==""||gioitinh==""||ngaysinh==""||sdt==""||email==""||sonhatenduong==""||tinhthanh==""||quanhuyen==""||phuongxa==""||hocvi==""||phanhang==""||chuyennganh==""||chucvi=="")
+        {
+            alert("Vui lòng nhập đầy đủ thông tin");
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    $("#ADDGV").click(
+        function()
+        {
+            if (checkNoiDungAddGV())
+            {
+                $.ajax(
+                    {
+                        url: "/add-info-teacher/",
+                        type: "POST",
+                        data:{
+                            'mgv': $("#mgv").val(),
+                            'tengv': $("#tengv").val(),
+                            'gioitinh': $("#gioitinh").val(),
+                            'ngaysinh': $("#ngaysinh").val(),
+                            'sdt': $("#sdt").val(),
+                            'email': $("#email").val(),
+                            'sonhatenduong': $("#SoNhaTenDuong").val(),
+                            'tinhthanh': $("#TinhThanh option:selected").html(),
+                            'quanhuyen': $("#QuanHuyen option:selected").html(),
+                            'phuongxa': $("#PhuongXa option:selected").html(),
+                            'hocvi': $("#chucdanh option:selected").html(),
+                            'phanhang': $("#phanhang option:selected").html(),
+                            'chuyennganh': $("#chuyennganh option:selected").html(),
+                            'chucvi': $("#chucvi option:selected").html(),
+                            'csrfmiddlewaretoken': '{{csrf_token}}'
+                        },
+                        success: function(data){
+                            alert("Thêm thông tin thành công");
+                            location.reload();
+                        },
+                        error: function(){
+                            alert("Thêm thông tin thất bại");
+                        }
+                    }
+                )
+            }
+        }
+    )
+    
+    var options_lop = $('#dslophoc option').map(function() {
+        return $(this).text().trim();
+    }).get();
+    options_lop= options_lop.slice(1, options_lop.length);
+    function checkNoiDungAddLop()
+    {
+        var malop= $("#mlh").val();
+        var tenlop= $("#tenlop").val();
+        var gv= $("#select_gv option:selected").html();
+
+        if (malop==""||tenlop==""||gv=="")
+        {
+            alert("Vui lòng nhập đầy đủ thông tin");
+            return false;
+        }
+        if (options_lop.includes(malop) || options_lop.includes(tenlop))
+        {
+            alert("Mã lớp học đã tồn tại");
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    $("#ADDClass").click(
+        function()
+        {
+            if (checkNoiDungAddLop())
+            {
+                $.ajax(
+                    {
+                        url: "/add-class/",
+                        type: "POST",
+                        data:{
+                            'malop': $("#mlh").val(),
+                            'tenlop': $("#tenlop").val(),
+                            'gv': $("#select_gv option:selected").html(),
+                            'csrfmiddlewaretoken': '{{csrf_token}}'
+                        },
+                        success: function(data){
+                            alert("Thêm thông tin thành công");
+                            location.reload();
+                        },
+                        error: function(){
+                            alert("Thêm thông tin thất bại");
+                        }
+                    }
+                )
+            }
+        }
+    )
+
+
+
+    const selected_lophoc=document.getElementById("dslophoc");
+    const selected_file = document.getElementById("excelFile");
+    var name_file="";
+    var name_lophoc="";
+    selected_file.addEventListener("change", function(){
+        const selectValue = selected_file.value.trim().replace("C:\\fakepath\\", "media/");
+        name_file=selectValue;
+    })
+    selected_lophoc.addEventListener("change", function(){
+        const selectValue = selected_lophoc.value.trim();
+        name_lophoc=selectValue;
+    })
+
+    function checkRongFile()
+    {
+        if (name_file=="" || name_lophoc=="")
+        {
+            alert("Vui lòng chọn file và lớp");
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    $("#UpdateSV").click(
+        function()
+        {
+            if (checkRongFile())
+            {
+                $.ajax(
+                    {
+                        url: "/update-student-list/",
+                        type: "POST",
+                        data:{
+                            'name_file': name_file,
+                            'name_lophoc': name_lophoc,
+                            'csrfmiddlewaretoken': '{{csrf_token}}'
+                        },
+                        success: function(data){
+                            alert("Thêm thông tin thành công");
+                            location.reload();
+                        },
+                        error: function(){
+                            alert("Thêm thông tin thất bại");
+                        }
+                    }
+                )
+            }
+        }
+    )
 </script>
 {% endblock script-js %}

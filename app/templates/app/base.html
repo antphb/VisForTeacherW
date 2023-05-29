@@ -64,16 +64,7 @@
                         <li><a class="link_name" href="{%url 'list-note-student' 'all' 'all'%}">Danh sách ghi chú</a></li>
                     </ul>
                 </li>
-
-                {% comment %} <li>
-                    <a href="{%url 'tableStudent' 'DHKHDL16A' %}" style="height: 50px; font-size: 12px;">
-                        <i class="fa-solid fa-table-list"></i>
-                        <span class="link_name">Danh sách lớp</span>
-                    </a>
-                    <ul class="sub-menu blank">
-                        <li><a class="link_name" href="{%url 'tableStudent' 'ALL'%}">Danh sách lớp</a></li>
-                    </ul>
-                </li>
+                {% comment %}
                 <li>
                     <a href="{%url 'list-note-student' 'all' 'all' %}" style="height: 50px; font-size: 12px;">
                         <i class="fa-solid fa-table-list"></i>
@@ -97,7 +88,7 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="{%url 'update-list-score'%}"  style="height: 50px; font-size: 12px;">
+                    <a href="{%url 'update-list-score' %}"  style="height: 50px; font-size: 12px;">
                         <i class="fa-sharp fa-solid fa-rotate"></i>
                         <span class="link_name">Cập nhật danh sách điểm</span>
                     </a>
@@ -105,9 +96,17 @@
                         <li><a class="link_name" href="{%url 'update-list-score'%}">Cập nhật danh sách điểm</a></li>
                     </ul>
                 </li>
-            
                 {% endif %}
-
+            
+                <li>
+                    <a href="{%url 'aboutUs' %}" style="height: 50px; font-size: 12px;">
+                        <i class="fa-regular fa-address-card"></i>
+                        <span class="link_name">About US</span>
+                    </a>
+                    <ul class="sub-menu blank">
+                        <li><a class="link_name" href="{%url 'aboutUs'%}">About US</a></li>
+                    </ul>
+                </li>
                 <li>
                     <a href="{% url 'change_password' %}"  style="height: 50px; font-size: 12px;">
                         <i class="fa-solid fa-key"></i>
