@@ -112,13 +112,13 @@ Chào mừng bạn đến với ứng dụng web của chúng tôi - một công
 <!-- CONTACT -->
 ## Contact
 ### Author 1
-Your Name - [Nguyễn Thanh](https://www.facebook.com/NDThanh2011) - ngt2001@gmail.com
+[Nguyễn Thanh](https://www.facebook.com/NDThanh2011) - thanhnd2462245@gmail.com
 
 Kaggle Link: [https://www.kaggle.com/nhthanhnguyn](https://www.kaggle.com/nhthanhnguyn)
 
 
 ### Author 2
-Your Name - [Nhân Vi](https://www.facebook.com/nhan.vi.798) - nhanvi212@gmail.com
+[Nhân Vi](https://www.facebook.com/nhan.vi.798) - nhanvi212@gmail.com
 
 Kaggle Link: [https://www.kaggle.com/nhanvi](https://www.kaggle.com/nhanvi)
 
