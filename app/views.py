@@ -162,41 +162,46 @@ class APIClass(APIView):
 
 class tableStudent(View):
     def get(self, request,val):
-        val=val.strip()
-        if val=="ALL":
-            if request.user.is_superuser:
-                students=Sinhvien.objects.all().order_by('ten')
-                # Lấy trường malh trong bảng lớp học
+        try:
+            val=val.strip()
+            if val=="ALL":
+                if request.user.is_superuser:
+                    students=Sinhvien.objects.all().order_by('ten')
+                    # Lấy trường malh trong bảng lớp học
+                else:
+                    lophoc=[i.malh.strip() for i in Lophoc.objects.filter(magv=Giaovien.objects.get(magv=request.user).magv)]
+                    students = Sinhvien.objects.filter(Q(malop__in=lophoc)).order_by('ten')
+                # print(students)
+            elif val=="Graduated":
+                if request.user.is_superuser:
+                    giaovien=Giaovien.objects.all()
+                    students=[]
+                    for gv in giaovien:
+                        students.extend(Graduate_student_list(gv.magv))
+                else:
+                    students=Graduate_student_list(request.user)
             else:
-                lophoc=[i.malh.strip() for i in Lophoc.objects.filter(magv=Giaovien.objects.get(magv=request.user).magv)]
-                students = Sinhvien.objects.filter(Q(malop__in=lophoc)).order_by('ten')
-            # print(students)
-        elif val=="Graduated":
-            if request.user.is_superuser:
-                giaovien=Giaovien.objects.all()
-                students=[]
-                for gv in giaovien:
-                    students.extend(Graduate_student_list(gv.magv))
-            else:
-                students=Graduate_student_list(request.user)
-        else:
-            students = Sinhvien.objects.filter(malop=val).order_by('ten')
-        maLop=val
-        ngaysinhs=[]
-        gioitinhs=[]
-        diemtb4s=[]
-        soTCs=[]
-        notes=[]
-        for student in students:
-            ngaysinh=student.ngaysinh.strftime('%Y/%m/%d')
-            ngaysinhs.append(ngaysinh)
-            gioitinhs.append("Nam" if student.gioitinh==True else "Nữ")
-            diemtb4s.append(round(Hocluc.objects.filter(masv=student.masv)[0].thangdiem4,2))
-            soTCs.append(Hocluc.objects.filter(masv=student.masv)[0].sotinchi)
-            notes.append(Ghichu.objects.filter(masv=student.masv).count())
-        dslh = [x.strip() for x in Lophoc.objects.all().values_list('malh', flat=True)]
-        data=zip(students,ngaysinhs,gioitinhs,diemtb4s,soTCs,notes)        
-        return render(request, 'app/tableStudent.html', locals())
+                students = Sinhvien.objects.filter(malop=val).order_by('ten')
+            maLop=val
+            ngaysinhs=[]
+            gioitinhs=[]
+            diemtb4s=[]
+            soTCs=[]
+            notes=[]
+            
+            for student in students:
+                ngaysinh=student.ngaysinh.strftime('%Y/%m/%d')
+                ngaysinhs.append(ngaysinh)
+                gioitinhs.append("Nam" if student.gioitinh==True else "Nữ")
+                diemtb4s.append(round(Hocluc.objects.filter(masv=student.masv)[0].thangdiem4,2))
+                # print(val)
+                soTCs.append(Hocluc.objects.filter(masv=student.masv)[0].sotinchi)
+                notes.append(Ghichu.objects.filter(masv=student.masv).count())
+            dslh = [x.strip() for x in Lophoc.objects.all().values_list('malh', flat=True)]
+            data=zip(students,ngaysinhs,gioitinhs,diemtb4s,soTCs,notes)        
+            return render(request, 'app/tableStudent.html', locals())
+        except:
+            return render(request, 'app/home.html', locals())
     
 class APIChartBarScoreView(APIView):
     def get(self, request,val):
@@ -623,6 +628,24 @@ def fun_update_Score(file_nien_giam, file_diem):
     for m, t, s in zip(mssv, mhp, dtp):
         hp = {"mssv": m, "mhp": t, "dtp": s}
         ds_dsv.append(hp)
+    # các cột 'Học lực', 'nan', 'nan', 'nan', 'nan'  và đổi tên cột thành "Số tín chỉ","Điểm 10", "Điểm4","Điểm chữ", "Xếp loại" 
+    df3 = df2.iloc[:, -7:-2]
+    df3.columns = ["Số tín chỉ","Điểm 10", "Điểm4","Điểm chữ", "Xếp loại"]  
+    # Bây giờ thêm df2["Mã sinh viên"] vào df3
+    df3["Mã sinh viên"] = df2["Mã sinh viên"]
+    # hocluc= Hocluc.objects.create(masv= Sinhvien.objects.get(masv=df3["Mã sinh viên"][i]), sotinchi= df3["Số tín chỉ"][i], thangdiem10= df3["Điểm 10"][i], thangdiem4= df3["Điểm4"][i], diemchu= df3["Điểm chữ"][i], xeploai= df3["Xếp loại"][i])
+    for i in range(len(df3)):
+        try:
+            hocluc= Hocluc.objects.get(masv= Sinhvien.objects.get(masv=df3["Mã sinh viên"][i]))
+        except:
+            hocluc= Hocluc.objects.create(masv= Sinhvien.objects.get(masv=df3["Mã sinh viên"][i]))
+        hocluc.sotinchi= df3["Số tín chỉ"][i]
+        hocluc.thangdiem10= df3["Điểm 10"][i]
+        hocluc.thangdiem4= df3["Điểm4"][i]
+        hocluc.diemchu= df3["Điểm chữ"][i]
+        hocluc.xeploai= df3["Xếp loại"][i]
+        hocluc.save()
+
     # chitietdiem= Chitietdiem.objects.all()
     for i in range(len(ds_dsv)):
         if Chitietdiem.objects.filter(masv=ds_dsv[i]["mssv"], mahp=ds_dsv[i]["mhp"]).exists():
