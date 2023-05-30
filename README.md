@@ -91,9 +91,6 @@ Chào mừng bạn đến với ứng dụng web của chúng tôi - một công
 
 ## Kết quả đạt được
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
 ### Giáo viên chủ nhiệm
 
 - Đăng nhập: Giáo viên có thể đăng nhập vào hệ thống bằng tài khoản và mật khẩu được cung cấp.
@@ -117,7 +114,7 @@ To get a local copy up and running follow these simple example steps.
 ### Author 1
 Your Name - [Nguyễn Thanh](https://www.facebook.com/NDThanh2011) - ngt2001@gmail.com
 
-Kaggle Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Kaggle Link: [https://www.kaggle.com/nhthanhnguyn](https://www.kaggle.com/nhthanhnguyn)
 
 
 ### Author 2
@@ -128,7 +125,6 @@ Kaggle Link: [https://www.kaggle.com/nhanvi](https://www.kaggle.com/nhanvi)
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
 
 * [Choose an Open Source License](https://choosealicense.com)
 * [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
